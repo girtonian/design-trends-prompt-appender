@@ -1,0 +1,16 @@
+{
+  "name": "Design Trends Prompt Appender",
+  "id": "design-trends-prompt-appender",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/index.html",
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": [
+      "https://images.unsplash.com"
+    ],
+    "reasoning": "Plugin displays curated design trend imagery from Unsplash to help users visualize aesthetic styles"
+  },
+  "capabilities": [],
+  "permissions": []
+}
