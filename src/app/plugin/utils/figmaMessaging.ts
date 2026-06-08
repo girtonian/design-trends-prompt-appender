@@ -1,12 +1,20 @@
 /**
  * Messaging utilities for communicating between UI and plugin code
- * In standalone plugins, the UI runs in an iframe and communicates via postMessage
  */
 
 export interface FigmaNode {
   id: string;
   name: string;
   type: string;
+}
+
+export interface StoredTrendData {
+  trendId: number;
+  trendTitle: string;
+  selectedVariationIndex: number | null;
+  selectedVariation: string | null;
+  fullPrompt: string | null;
+  appliedAt: number;
 }
 
 export interface SelectionChangedMessage {
@@ -62,7 +70,7 @@ export function requestSelection() {
 /**
  * Save trend data to Figma nodes
  */
-export function saveTrendData(nodeIds: string[], trendData: any) {
+export function saveTrendData(nodeIds: string[], trendData: StoredTrendData) {
   postToPlugin({
     type: 'save-trend-data',
     nodeIds,
@@ -85,14 +93,7 @@ export function getTrendData(nodeId: string) {
  */
 export function clearTrendData(nodeIds: string[]) {
   postToPlugin({
-    type: 'clear-trend-data',
+    type: "clear-trend-data",
     nodeIds,
   });
-}
-
-/**
- * Close the plugin
- */
-export function closePlugin() {
-  postToPlugin({ type: 'close-plugin' });
 }
