@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && esbuild src/plugin-code.ts --bundle --outfile=dist/code.js --target=es2017",
     "build:ui": "vite build",
     "build:code": "esbuild src/plugin-code.ts --bundle --outfile=dist/code.js --target=es2017",
     "dev": "vite",
