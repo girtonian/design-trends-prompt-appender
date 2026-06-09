@@ -10,6 +10,7 @@ import { trends } from "../data/trends";
 import { TrendCarouselCard } from "../components/TrendCarouselCard";
 import { TrendDetailPanel } from "../components/TrendDetailPanel";
 import { clearTrendData } from "./utils/figmaMessaging";
+import { copyTextToClipboard } from "./utils/copyToClipboard";
 
 const CARDS_PER_PAGE = 4;
 
@@ -49,12 +50,12 @@ export function TrendBrowser() {
 
   const handleCopyMasterPrompt = async () => {
     const text = selectedTrend.midjourneyPrompts.masterPrompt;
-    try {
-      await navigator.clipboard.writeText(text);
+    const copied = await copyTextToClipboard(text);
+    if (copied) {
       setCopiedMaster(true);
       toast.success("Master prompt copied!");
       setTimeout(() => setCopiedMaster(false), 2000);
-    } catch {
+    } else {
       toast.error("Failed to copy master prompt");
     }
   };

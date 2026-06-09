@@ -7,6 +7,7 @@
     "build": "vite build && esbuild src/plugin-code.ts --bundle --outfile=dist/code.js --target=es2017",
     "build:ui": "vite build",
     "build:code": "esbuild src/plugin-code.ts --bundle --outfile=dist/code.js --target=es2017",
+    "export-prompts": "esbuild scripts/export-prompts.ts --bundle --platform=node --format=esm --outfile=scripts/export-prompts.mjs && node scripts/export-prompts.mjs",
     "watch": "concurrently \"vite build --watch\" \"esbuild src/plugin-code.ts --bundle --outfile=dist/code.js --watch --target=es2017\""
   },
   "dependencies": {

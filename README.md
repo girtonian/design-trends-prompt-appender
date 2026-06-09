@@ -33,6 +33,7 @@ pnpm run build
 | `pnpm run build` | Production build (`dist/code.js` + `dist/index.html`) |
 | `pnpm run build:ui` | UI bundle only |
 | `pnpm run build:code` | Sandbox code only |
+| `pnpm run export-prompts` | Regenerate `PROMPTS.md` and FLORA CSV files from trend data |
 
 ### Project structure
 
@@ -68,6 +69,24 @@ dist/                              # Build output (gitignored)
 3. Select `manifest.json` from this directory.
 4. Create or select a frame, run the plugin, pick a trend, and copy a prompt variation.
 5. Re-open the plugin on the same frame — the applied trend is highlighted in the carousel.
+
+## Prompt library for Figma Weave & FLORA.ai
+
+All 100 variation prompts plus 10 master prompts are exported in [`PROMPTS.md`](PROMPTS.md).
+
+| File | Use |
+|------|-----|
+| [`PROMPTS-flora-batch.csv`](PROMPTS-flora-batch.csv) | **Upload to FLORA Batch Node** — no header, prompt in column 1 (100 rows) |
+| [`PROMPTS-flora-reference.csv`](PROMPTS-flora-reference.csv) | Spreadsheet reference with trend ID, title, and variation number |
+| [`PROMPTS.md`](PROMPTS.md) | Full prompt library with Weave-ready and Midjourney formats |
+
+**FLORA Batch Node:** drag `PROMPTS-flora-batch.csv` onto a text Batch Node. FLORA reads only the first column and does not skip headers, so the batch file intentionally has no header row. [FLORA Batch Node docs](https://docs.flora.ai/nodes/batch-node)
+
+Regenerate after editing `src/app/data/trends.ts`:
+
+```bash
+pnpm run export-prompts
+```
 
 ## Architecture
 
