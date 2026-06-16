@@ -14,10 +14,10 @@ export const STICKER_SINGLE_NEGATIVE_ADDITIONS =
 export const STICKER_SINGLE_ASPECT_RATIO = "--ar 1:1";
 
 export const STICKER_SHEET_SUFFIX =
-  "sticker sheet layout, grid of multiple die-cut vinyl stickers, uniform thick white borders on each icon, rows and columns of isolated cutout subjects, peel-and-stick sheet aesthetic, cohesive icon batch on white backing";
+  "sticker sheet layout, grid of multiple die-cut vinyl stickers, uniform thick white borders on each icon, rows and columns of isolated cutout subjects, peel-and-stick sheet aesthetic, cohesive icon batch on white backing, generous outer margin padding inside frame edges, all stickers fully contained within canvas bounds, nothing cropped at edges, even spacing between stickers, clear gutters between rows and columns, non-overlapping sticker layout, no overlapping stickers or shadows";
 
 export const STICKER_SHEET_NEGATIVE_ADDITIONS =
-  "single lone sticker, one subject only, full scene background, empty sheet";
+  "single lone sticker, one subject only, full scene background, empty sheet, stickers touching frame edge, cropped or clipped stickers, overlapping stickers, overlapping drop shadows, stickers bleeding outside bounds, tight edge-to-edge layout, zero margin";
 
 export const STICKER_SHEET_ASPECT_RATIO = "--ar 3:4";
 
