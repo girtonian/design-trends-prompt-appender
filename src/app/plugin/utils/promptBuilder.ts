@@ -3,6 +3,58 @@
  * Extracted from PromptGenerator component for reusability
  */
 
+export type StickerFormat = "off" | "single" | "sheet";
+
+export const STICKER_SINGLE_SUFFIX =
+  "die-cut vinyl sticker, thick white outline border following subject silhouette, isolated cutout subject, white background, subtle drop shadow, single centered sticker";
+
+export const STICKER_SINGLE_NEGATIVE_ADDITIONS =
+  "full scene background, rectangular photo crop, no border, multiple scattered subjects, sticker sheet layout";
+
+export const STICKER_SINGLE_ASPECT_RATIO = "--ar 1:1";
+
+export const STICKER_SHEET_SUFFIX =
+  "sticker sheet layout, grid of multiple die-cut vinyl stickers, uniform thick white borders on each icon, rows and columns of isolated cutout subjects, peel-and-stick sheet aesthetic, cohesive icon batch on white backing";
+
+export const STICKER_SHEET_NEGATIVE_ADDITIONS =
+  "single lone sticker, one subject only, full scene background, empty sheet";
+
+export const STICKER_SHEET_ASPECT_RATIO = "--ar 3:4";
+
+export interface BuildFullPromptOptions {
+  stickerFormat?: StickerFormat;
+}
+
+export function resolveStickerFormatFromLegacy(
+  stickerFormat?: StickerFormat,
+  stickerMode?: boolean
+): StickerFormat {
+  if (stickerFormat) return stickerFormat;
+  return stickerMode ? "single" : "off";
+}
+
+export function getStickerFormatLabel(format: StickerFormat): string {
+  switch (format) {
+    case "single":
+      return "single sticker";
+    case "sheet":
+      return "sticker sheet";
+    default:
+      return "";
+  }
+}
+
+export function getStickerFormatFooterSuffix(format: StickerFormat): string {
+  switch (format) {
+    case "single":
+      return " · Single sticker";
+    case "sheet":
+      return " · Sticker sheet";
+    default:
+      return "";
+  }
+}
+
 /**
  * Extracts aspect ratio from a variation string if present
  * @param variation - The variation text that may contain --ar flag
@@ -23,27 +75,57 @@ export function cleanVariation(variation: string): string {
 }
 
 /**
+ * Appends sticker-format parameters to a master prompt (no variation or --no clause).
+ */
+export function applyStickerToMasterPrompt(
+  masterPrompt: string,
+  stickerFormat: "single" | "sheet"
+): string {
+  const suffix =
+    stickerFormat === "sheet" ? STICKER_SHEET_SUFFIX : STICKER_SINGLE_SUFFIX;
+  return `${masterPrompt}, ${suffix}`;
+}
+
+/**
  * Builds a complete Midjourney prompt from components
  * @param masterPrompt - The base prompt for the trend
  * @param variation - The specific variation text
  * @param aspectRatios - Available aspect ratios for the trend
  * @param negativePrompts - Things to exclude from the generation
+ * @param options - Optional flags such as stickerFormat
  * @returns Complete, ready-to-use Midjourney prompt
  */
 export function buildFullPrompt(
   masterPrompt: string,
   variation: string,
   aspectRatios: string[],
-  negativePrompts: string
+  negativePrompts: string,
+  options: BuildFullPromptOptions = {}
 ): string {
-  // Extract aspect ratio from variation if it exists, otherwise use default
-  const aspectRatio = extractAspectRatio(variation) || aspectRatios[0];
+  const stickerFormat = options.stickerFormat ?? "off";
 
-  // Remove aspect ratio from variation if it's there
+  const aspectRatio =
+    stickerFormat === "single"
+      ? STICKER_SINGLE_ASPECT_RATIO
+      : stickerFormat === "sheet"
+        ? STICKER_SHEET_ASPECT_RATIO
+        : extractAspectRatio(variation) || aspectRatios[0];
+
   const cleanedVariation = cleanVariation(variation);
+  const positiveParts = [masterPrompt, cleanedVariation];
 
-  // Construct the full prompt
-  const fullPrompt = `${masterPrompt}, ${cleanedVariation} ${aspectRatio} --no ${negativePrompts}`;
+  if (stickerFormat === "single") {
+    positiveParts.push(STICKER_SINGLE_SUFFIX);
+  } else if (stickerFormat === "sheet") {
+    positiveParts.push(STICKER_SHEET_SUFFIX);
+  }
 
-  return fullPrompt;
+  const mergedNegatives =
+    stickerFormat === "single"
+      ? `${negativePrompts}, ${STICKER_SINGLE_NEGATIVE_ADDITIONS}`
+      : stickerFormat === "sheet"
+        ? `${negativePrompts}, ${STICKER_SHEET_NEGATIVE_ADDITIONS}`
+        : negativePrompts;
+
+  return `${positiveParts.join(", ")} ${aspectRatio} --no ${mergedNegatives}`;
 }

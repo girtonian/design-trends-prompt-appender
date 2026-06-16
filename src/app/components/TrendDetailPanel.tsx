@@ -3,7 +3,7 @@ import { Trend } from "../data/trends";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { ChevronLeft, ChevronRight, Sparkles, Check } from "lucide-react";
 import { toast } from "sonner";
-import { buildFullPrompt } from "../plugin/utils/promptBuilder";
+import { buildFullPrompt, getStickerFormatLabel } from "../plugin/utils/promptBuilder";
 import { saveTrendData } from "../plugin/utils/figmaMessaging";
 import { copyTextToClipboard } from "../plugin/utils/copyToClipboard";
 import { usePluginContext } from "../plugin/PluginController";
@@ -13,7 +13,7 @@ interface TrendDetailPanelProps {
 }
 
 export function TrendDetailPanel({ trend }: TrendDetailPanelProps) {
-  const { selectedNodes } = usePluginContext();
+  const { selectedNodes, stickerFormat } = usePluginContext();
   const [variationIndex, setVariationIndex] = useState(0);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
@@ -33,7 +33,8 @@ export function TrendDetailPanel({ trend }: TrendDetailPanelProps) {
       trend.midjourneyPrompts.masterPrompt,
       variation,
       trend.midjourneyPrompts.aspectRatios,
-      trend.midjourneyPrompts.negativePrompts
+      trend.midjourneyPrompts.negativePrompts,
+      { stickerFormat }
     );
 
     const copied = await copyTextToClipboard(fullPrompt);
@@ -49,6 +50,7 @@ export function TrendDetailPanel({ trend }: TrendDetailPanelProps) {
           selectedVariation: variation,
           fullPrompt,
           appliedAt: Date.now(),
+          stickerFormat,
         }
       );
     }
@@ -58,14 +60,21 @@ export function TrendDetailPanel({ trend }: TrendDetailPanelProps) {
       setTimeout(() => setCopiedIndex(null), 2000);
     }
 
+    const stickerLabel = getStickerFormatLabel(stickerFormat);
+    const stickerSuffix = stickerLabel ? ` (${stickerLabel})` : "";
+
     if (selectedNodes.length > 0) {
       toast.success(
         copied
-          ? `Prompt copied & saved to ${selectedNodes.length} node${selectedNodes.length !== 1 ? "s" : ""}`
-          : `Prompt saved to ${selectedNodes.length} node${selectedNodes.length !== 1 ? "s" : ""} (clipboard unavailable)`
+          ? `Prompt copied & saved to ${selectedNodes.length} node${selectedNodes.length !== 1 ? "s" : ""}${stickerSuffix}`
+          : `Prompt saved to ${selectedNodes.length} node${selectedNodes.length !== 1 ? "s" : ""}${stickerSuffix} (clipboard unavailable)`
       );
     } else if (copied) {
-      toast.success("Midjourney prompt copied!");
+      toast.success(
+        stickerLabel
+          ? `Midjourney prompt copied! (${stickerLabel})`
+          : "Midjourney prompt copied!"
+      );
     } else {
       toast.error("Failed to copy prompt");
     }

@@ -2,6 +2,8 @@
  * Messaging utilities for communicating between UI and plugin code
  */
 
+import type { StickerFormat } from "./promptBuilder";
+
 export interface FigmaNode {
   id: string;
   name: string;
@@ -16,6 +18,9 @@ export interface StoredTrendData {
   fullPrompt: string | null;
   appliedAt: number;
   baseLayerName?: string;
+  stickerFormat?: StickerFormat;
+  /** @deprecated Use stickerFormat; true maps to "single" on restore */
+  stickerMode?: boolean;
 }
 
 export interface SelectionChangedMessage {

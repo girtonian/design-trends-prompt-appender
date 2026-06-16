@@ -10,15 +10,29 @@ import { trends } from "../data/trends";
 import { TrendCarouselCard } from "../components/TrendCarouselCard";
 import { TrendDetailPanel } from "../components/TrendDetailPanel";
 import { clearTrendData } from "./utils/figmaMessaging";
+import {
+  applyStickerToMasterPrompt,
+  getStickerFormatFooterSuffix,
+  getStickerFormatLabel,
+  type StickerFormat,
+} from "./utils/promptBuilder";
 import { copyTextToClipboard } from "./utils/copyToClipboard";
 
 const CARDS_PER_PAGE = 4;
+
+const STICKER_FORMAT_OPTIONS: { value: StickerFormat; label: string }[] = [
+  { value: "off", label: "Off" },
+  { value: "single", label: "Single" },
+  { value: "sheet", label: "Sheet" },
+];
 
 export function TrendBrowser() {
   const {
     selectedNodes,
     currentTrendData,
     refreshSelection,
+    stickerFormat,
+    setStickerFormat,
   } = usePluginContext();
 
   const [selectedTrendId, setSelectedTrendId] = useState(1);
@@ -28,6 +42,8 @@ export function TrendBrowser() {
   const selectedTrend = trends.find((t) => t.id === selectedTrendId) ?? trends[0];
   const appliedTrendId = currentTrendData?.trendId ?? null;
   const totalPages = Math.ceil(trends.length / CARDS_PER_PAGE);
+  const stickerFooterSuffix = getStickerFormatFooterSuffix(stickerFormat);
+  const stickerLabel = getStickerFormatLabel(stickerFormat);
 
   useEffect(() => {
     if (appliedTrendId) {
@@ -49,11 +65,19 @@ export function TrendBrowser() {
   };
 
   const handleCopyMasterPrompt = async () => {
-    const text = selectedTrend.midjourneyPrompts.masterPrompt;
+    const masterPrompt = selectedTrend.midjourneyPrompts.masterPrompt;
+    const text =
+      stickerFormat === "off"
+        ? masterPrompt
+        : applyStickerToMasterPrompt(masterPrompt, stickerFormat);
     const copied = await copyTextToClipboard(text);
     if (copied) {
       setCopiedMaster(true);
-      toast.success("Master prompt copied!");
+      toast.success(
+        stickerLabel
+          ? `Master prompt copied! (${stickerLabel})`
+          : "Master prompt copied!"
+      );
       setTimeout(() => setCopiedMaster(false), 2000);
     } else {
       toast.error("Failed to copy master prompt");
@@ -75,17 +99,45 @@ export function TrendBrowser() {
 
   const selectionLabel =
     selectedNodes.length === 0
-      ? "No selection — prompts copy to clipboard only"
+      ? stickerFormat !== "off"
+        ? "No selection — sticker prompts copy to clipboard only"
+        : "No selection — prompts copy to clipboard only"
       : selectedNodes.length === 1
-        ? `1 node: "${selectedNodes[0].name || "Unnamed"}"`
-        : `${selectedNodes.length} nodes selected`;
+        ? `1 node: "${selectedNodes[0].name || "Unnamed"}"${stickerFooterSuffix}`
+        : `${selectedNodes.length} nodes selected${stickerFooterSuffix}`;
 
   return (
     <div className="flex flex-col h-screen bg-white text-foreground">
       {/* Trend carousel section */}
       <section className="shrink-0 px-5 pt-5 pb-4 border-b border-black/10">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-lg font-semibold tracking-tight">Design Trend</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-lg font-semibold tracking-tight">Design Trend</h1>
+            <div
+              className="flex rounded-full border-2 border-black/20 p-0.5"
+              role="group"
+              aria-label="Sticker format"
+            >
+              {STICKER_FORMAT_OPTIONS.map(({ value, label }) => {
+                const isActive = stickerFormat === value;
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setStickerFormat(value)}
+                    aria-pressed={isActive ? "true" : "false"}
+                    className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+                      isActive
+                        ? "bg-black text-white"
+                        : "bg-white text-foreground hover:bg-black/5"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           <div className="flex items-center gap-1.5">
             <button
               type="button"

@@ -6,6 +6,10 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import { StoredTrendData } from "./utils/figmaMessaging";
 import { onPluginMessage, requestSelection, getTrendData, type FigmaNode } from "./utils/figmaMessaging";
+import {
+  resolveStickerFormatFromLegacy,
+  type StickerFormat,
+} from "./utils/promptBuilder";
 import { TrendBrowser } from "./TrendBrowser";
 import { Toaster } from "../components/ui/sonner";
 
@@ -13,6 +17,8 @@ interface PluginContextState {
   selectedNodes: FigmaNode[];
   currentTrendData: StoredTrendData | null;
   refreshSelection: () => void;
+  stickerFormat: StickerFormat;
+  setStickerFormat: (format: StickerFormat) => void;
 }
 
 const PluginContext = createContext<PluginContextState | null>(null);
@@ -25,9 +31,15 @@ export function usePluginContext() {
   return context;
 }
 
+function restoreStickerFormat(data: StoredTrendData | null): StickerFormat {
+  if (!data) return "off";
+  return resolveStickerFormatFromLegacy(data.stickerFormat, data.stickerMode);
+}
+
 export function PluginController() {
   const [selectedNodes, setSelectedNodes] = useState<FigmaNode[]>([]);
   const [currentTrendData, setCurrentTrendData] = useState<StoredTrendData | null>(null);
+  const [stickerFormat, setStickerFormat] = useState<StickerFormat>("off");
 
   const refreshSelection = () => {
     requestSelection();
@@ -42,10 +54,12 @@ export function PluginController() {
             getTrendData(message.selection[0].id);
           } else {
             setCurrentTrendData(null);
+            setStickerFormat("off");
           }
           break;
         case "trend-data":
           setCurrentTrendData(message.data);
+          setStickerFormat(restoreStickerFormat(message.data));
           break;
         case "save-success":
         case "clear-success":
@@ -64,6 +78,8 @@ export function PluginController() {
     selectedNodes,
     currentTrendData,
     refreshSelection,
+    stickerFormat,
+    setStickerFormat,
   };
 
   return (
