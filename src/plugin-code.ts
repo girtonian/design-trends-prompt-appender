@@ -30,12 +30,17 @@ figma.ui.onmessage = (msg) => {
       break;
 
     case 'save-trend-data':
-      // Save trend data to node(s)
+      // Save trend data to node(s) and append trend to layer name
       const { nodeIds, trendData } = msg;
       nodeIds.forEach((nodeId: string) => {
         const node = figma.getNodeById(nodeId);
         if (node && canStoreData(node)) {
-          node.setPluginData('designTrend', JSON.stringify(trendData));
+          const existing = getStoredTrendData(node);
+          const baseLayerName = resolveBaseLayerName(node, existing);
+          const dataToStore = { ...trendData, baseLayerName };
+
+          node.setPluginData('designTrend', JSON.stringify(dataToStore));
+          applyTrendToLayerName(node, baseLayerName, trendData.trendTitle);
         }
       });
       figma.ui.postMessage({
@@ -65,12 +70,14 @@ figma.ui.onmessage = (msg) => {
       break;
 
     case 'clear-trend-data':
-      // Clear trend data from node(s)
+      // Clear trend data from node(s) and restore original layer name
       const { nodeIds: clearNodeIds } = msg;
       clearNodeIds.forEach((nodeId: string) => {
         const node = figma.getNodeById(nodeId);
         if (node && canStoreData(node)) {
+          const existing = getStoredTrendData(node);
           node.setPluginData('designTrend', '');
+          restoreBaseLayerName(node, existing);
         }
       });
       figma.ui.postMessage({
@@ -102,6 +109,13 @@ figma.on('selectionchange', () => {
   });
 });
 
+const TREND_NAME_SEPARATOR = ' — ';
+
+interface StoredTrendData {
+  trendTitle: string;
+  baseLayerName?: string;
+}
+
 /**
  * Check if a node type supports plugin data storage
  */
@@ -122,6 +136,75 @@ function canStoreData(node: BaseNode): boolean {
   ];
 
   return supportedTypes.includes(node.type);
+}
+
+function canRename(node: BaseNode): node is SceneNode {
+  return 'name' in node;
+}
+
+function getTrendNameSuffix(trendTitle: string): string {
+  return `${TREND_NAME_SEPARATOR}${trendTitle}`;
+}
+
+function stripTrendNameSuffix(name: string, trendTitle: string): string {
+  const suffix = getTrendNameSuffix(trendTitle);
+  return name.endsWith(suffix) ? name.slice(0, -suffix.length) : name;
+}
+
+function getStoredTrendData(node: BaseNode): StoredTrendData | null {
+  const raw = node.getPluginData('designTrend');
+  if (!raw) return null;
+
+  try {
+    return JSON.parse(raw) as StoredTrendData;
+  } catch {
+    return null;
+  }
+}
+
+function resolveBaseLayerName(
+  node: BaseNode,
+  existing: StoredTrendData | null
+): string {
+  if (existing?.baseLayerName) {
+    return existing.baseLayerName;
+  }
+
+  if (!canRename(node)) {
+    return '';
+  }
+
+  if (existing?.trendTitle) {
+    return stripTrendNameSuffix(node.name, existing.trendTitle);
+  }
+
+  return node.name;
+}
+
+function applyTrendToLayerName(
+  node: BaseNode,
+  baseLayerName: string,
+  trendTitle: string
+): void {
+  if (!canRename(node) || !baseLayerName) return;
+  node.name = `${baseLayerName}${getTrendNameSuffix(trendTitle)}`;
+}
+
+function restoreBaseLayerName(
+  node: BaseNode,
+  existing: StoredTrendData | null
+): void {
+  if (!canRename(node) || !existing) return;
+
+  const baseName =
+    existing.baseLayerName ??
+    (existing.trendTitle
+      ? stripTrendNameSuffix(node.name, existing.trendTitle)
+      : null);
+
+  if (baseName) {
+    node.name = baseName;
+  }
 }
 
 // Send initial selection on load

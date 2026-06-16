@@ -99,7 +99,7 @@ Trend data stored on nodes:
 ```typescript
 node.setPluginData("designTrend", JSON.stringify({
   trendId: 1,
-  trendTitle: "Naïve Design",
+  trendTitle: "Imperfect Minimalism",
   selectedVariationIndex: 2,
   selectedVariation: "marker scribbles...",
   fullPrompt: "naïve childlike illustration...",

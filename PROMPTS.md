@@ -27,20 +27,20 @@ See [`PROMPTS-flora-reference.csv`](PROMPTS-flora-reference.csv) for trend label
 
 | # | Trend | Variations |
 |---|-------|------------|
-| 01 | Naïve Design | 10 |
-| 02 | Trinket Design | 10 |
-| 03 | Grainy Gradient Blur | 10 |
-| 04 | Fuzzy Amorphous Creatures | 10 |
-| 05 | Acid Blur | 10 |
-| 06 | Blurry Ethereal Florals | 10 |
-| 07 | Type Collage | 10 |
-| 08 | Punk Grunge Revival | 10 |
-| 09 | Signal Graphics | 10 |
-| 10 | Future Medieval Design | 10 |
+| 01 | Imperfect Minimalism | 10 |
+| 02 | Object Nostalgia | 10 |
+| 03 | Atmospheric Gradient | 10 |
+| 04 | Plush Surrealism | 10 |
+| 05 | Psychedelic Optics | 10 |
+| 06 | Ethereal Botanics | 10 |
+| 07 | Fragmented Type | 10 |
+| 08 | Xerox Punk | 10 |
+| 09 | Broadcast Signals | 10 |
+| 10 | Medieval Futurism | 10 |
 
 ---
 
-## 01 — Naïve Design
+## 01 — Imperfect Minimalism
 
 *Imperfect on purpose.*
 
@@ -202,7 +202,7 @@ naïve childlike illustration, hand-drawn doodles, shaky marker outlines, uneven
 
 ---
 
-## 02 — Trinket Design
+## 02 — Object Nostalgia
 
 *Small treasures, big stories.*
 
@@ -364,7 +364,7 @@ flat-lay catalog of isolated objects, specimen sheet layout, numbered labels, mo
 
 ---
 
-## 03 — Grainy Gradient Blur
+## 03 — Atmospheric Gradient
 
 *Texture meets atmosphere.*
 
@@ -526,7 +526,7 @@ grainy gradient blur fields, soft airbrush haze, dreamy color transitions, misty
 
 ---
 
-## 04 — Fuzzy Amorphous Creatures
+## 04 — Plush Surrealism
 
 *Soft friends from the edges of imagination.*
 
@@ -688,7 +688,7 @@ fuzzy gradient blob creature, amorphous shape, airbrushed edges, neon candy grad
 
 ---
 
-## 05 — Acid Blur
+## 05 — Psychedelic Optics
 
 *Reality bending visuals.*
 
@@ -850,7 +850,7 @@ acid-blur neon gradients, spray-paint plumes, grain-heavy edges, chaotic dreamli
 
 ---
 
-## 06 — Blurry Ethereal Florals
+## 06 — Ethereal Botanics
 
 *Nature through frosted glass.*
 
@@ -1012,7 +1012,7 @@ ethereal soft-focus florals, dreamy pastel gradients, glowing petals, atmospheri
 
 ---
 
-## 07 — Type Collage
+## 07 — Fragmented Type
 
 *Words as raw material.*
 
@@ -1174,7 +1174,7 @@ chaotic typographic collage, oversized letters, mixed fonts, stretched & warped 
 
 ---
 
-## 08 — Punk Grunge Revival
+## 08 — Xerox Punk
 
 *Digital decay and rebellion.*
 
@@ -1336,7 +1336,7 @@ grunge zine collage, xerox textures, torn edges, graffiti scribbles, ransom-note
 
 ---
 
-## 09 — Signal Graphics
+## 09 — Broadcast Signals
 
 *Function as aesthetic.*
 
@@ -1498,7 +1498,7 @@ MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3
 
 ---
 
-## 10 — Future Medieval Design
+## 10 — Medieval Futurism
 
 *When castles meet circuits.*
 

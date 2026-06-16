@@ -15,6 +15,7 @@ export interface StoredTrendData {
   selectedVariation: string | null;
   fullPrompt: string | null;
   appliedAt: number;
+  baseLayerName?: string;
 }
 
 export interface SelectionChangedMessage {

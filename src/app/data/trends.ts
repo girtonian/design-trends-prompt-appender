@@ -19,7 +19,7 @@ export interface Trend {
 export const trends: Trend[] = [
   {
     id: 1,
-    title: "Naïve Design",
+    title: "Imperfect Minimalism",
     tagline: "Imperfect on purpose.",
     description: "A celebration of hand-drawn aesthetics, childlike wonder, and deliberately rough edges. This trend embraces imperfection as a form of authenticity, rejecting the polish of digital perfection in favor of human touch and playful experimentation.",
     keywords: ["Hand-drawn", "Playful", "Imperfect", "Authentic", "Whimsical"],
@@ -47,7 +47,7 @@ export const trends: Trend[] = [
   },
   {
     id: 2,
-    title: "Trinket Design",
+    title: "Object Nostalgia",
     tagline: "Small treasures, big stories.",
     description: "Inspired by curio cabinets and personal collections, this trend focuses on intricate, jewel-like details and the beauty of small objects. It's about creating visual microcosms that reward close inspection and tell layered stories.",
     keywords: ["Intricate", "Collectible", "Detailed", "Precious", "Miniature"],
@@ -75,7 +75,7 @@ export const trends: Trend[] = [
   },
   {
     id: 3,
-    title: "Grainy Gradient Blur",
+    title: "Atmospheric Gradient",
     tagline: "Texture meets atmosphere.",
     description: "Soft gradients get a tactile upgrade with noise and grain, creating depth and warmth. This trend brings analog texture to digital surfaces, making interfaces feel more material and less sterile.",
     keywords: ["Textured", "Atmospheric", "Soft", "Analog", "Warm"],
@@ -103,7 +103,7 @@ export const trends: Trend[] = [
   },
   {
     id: 4,
-    title: "Fuzzy Amorphous Creatures",
+    title: "Plush Surrealism",
     tagline: "Soft friends from the edges of imagination.",
     description: "Organic, blob-like characters that exist in the liminal space between recognizable and abstract. These friendly forms bring comfort and curiosity to digital spaces, serving as gentle mascots for brands embracing softness.",
     keywords: ["Organic", "Soft", "Abstract", "Friendly", "Shapeshifting"],
@@ -131,7 +131,7 @@ export const trends: Trend[] = [
   },
   {
     id: 5,
-    title: "Acid Blur",
+    title: "Psychedelic Optics",
     tagline: "Reality bending visuals.",
     description: "Vibrant, psychedelic color combinations with chromatic aberration and motion blur effects. This trend channels Y2K energy mixed with rave culture, creating eye-catching, high-energy visuals that demand attention.",
     keywords: ["Psychedelic", "Vibrant", "Energetic", "Distorted", "Y2K"],
@@ -159,7 +159,7 @@ export const trends: Trend[] = [
   },
   {
     id: 6,
-    title: "Blurry Ethereal Florals",
+    title: "Ethereal Botanics",
     tagline: "Nature through frosted glass.",
     description: "Botanical imagery softened to the edge of abstraction, creating romantic and atmospheric visuals. This trend taps into cottagecore and escapism while maintaining a contemporary, digital-native aesthetic.",
     keywords: ["Botanical", "Romantic", "Soft-focus", "Dreamy", "Organic"],
@@ -187,7 +187,7 @@ export const trends: Trend[] = [
   },
   {
     id: 7,
-    title: "Type Collage",
+    title: "Fragmented Type",
     tagline: "Words as raw material.",
     description: "Typography breaks free from the grid, layering, overlapping, and colliding to create dynamic compositions. This trend treats text as a visual element first, meaning second, embracing chaos and energy.",
     keywords: ["Layered", "Dynamic", "Expressive", "Chaotic", "Bold"],
@@ -215,7 +215,7 @@ export const trends: Trend[] = [
   },
   {
     id: 8,
-    title: "Punk Grunge Revival",
+    title: "Xerox Punk",
     tagline: "Digital decay and rebellion.",
     description: "Raw, distressed aesthetics that channel 90s counterculture into contemporary digital design. This trend embraces imperfection, distortion, and anti-corporate sentiment, offering an antidote to the clean minimalism of the 2010s.",
     keywords: ["Raw", "Distressed", "Rebellious", "90s", "Authentic"],
@@ -243,7 +243,7 @@ export const trends: Trend[] = [
   },
   {
     id: 9,
-    title: "Signal Graphics",
+    title: "Broadcast Signals",
     tagline: "Function as aesthetic.",
     description: "Utilitarian visuals inspired by technical diagrams, data visualization, and system interfaces. This trend celebrates clarity and information density, turning functional design into a sophisticated aesthetic language.",
     keywords: ["Technical", "Precise", "Functional", "Data-driven", "Minimal"],
@@ -271,7 +271,7 @@ export const trends: Trend[] = [
   },
   {
     id: 10,
-    title: "Future Medieval Design",
+    title: "Medieval Futurism",
     tagline: "When castles meet circuits.",
     description: "A fascinating collision of medieval craftsmanship aesthetics with sci-fi futurism. This trend imagines a future that looks backward, blending illuminated manuscript details with holographic interfaces and creating a uniquely timeless feel.",
     keywords: ["Hybrid", "Ornate", "Futuristic", "Historical", "Paradoxical"],
