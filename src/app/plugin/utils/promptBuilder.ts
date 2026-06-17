@@ -23,6 +23,7 @@ export const STICKER_SHEET_ASPECT_RATIO = "--ar 3:4";
 
 export interface BuildFullPromptOptions {
   stickerFormat?: StickerFormat;
+  themeSubjectPrompt?: string | null;
 }
 
 export function resolveStickerFormatFromLegacy(
@@ -79,11 +80,17 @@ export function cleanVariation(variation: string): string {
  */
 export function applyStickerToMasterPrompt(
   masterPrompt: string,
-  stickerFormat: "single" | "sheet"
+  stickerFormat: "single" | "sheet",
+  themeSubjectPrompt?: string | null
 ): string {
-  const suffix =
-    stickerFormat === "sheet" ? STICKER_SHEET_SUFFIX : STICKER_SINGLE_SUFFIX;
-  return `${masterPrompt}, ${suffix}`;
+  const parts = [masterPrompt];
+  if (themeSubjectPrompt) {
+    parts.push(themeSubjectPrompt);
+  }
+  parts.push(
+    stickerFormat === "sheet" ? STICKER_SHEET_SUFFIX : STICKER_SINGLE_SUFFIX
+  );
+  return parts.join(", ");
 }
 
 /**
@@ -103,6 +110,7 @@ export function buildFullPrompt(
   options: BuildFullPromptOptions = {}
 ): string {
   const stickerFormat = options.stickerFormat ?? "off";
+  const themeSubjectPrompt = options.themeSubjectPrompt ?? null;
 
   const aspectRatio =
     stickerFormat === "single"
@@ -113,6 +121,10 @@ export function buildFullPrompt(
 
   const cleanedVariation = cleanVariation(variation);
   const positiveParts = [masterPrompt, cleanedVariation];
+
+  if (themeSubjectPrompt && stickerFormat !== "off") {
+    positiveParts.push(themeSubjectPrompt);
+  }
 
   if (stickerFormat === "single") {
     positiveParts.push(STICKER_SINGLE_SUFFIX);

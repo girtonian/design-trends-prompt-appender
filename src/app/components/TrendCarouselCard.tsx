@@ -19,29 +19,27 @@ export function TrendCarouselCard({
     <button
       type="button"
       onClick={onClick}
-      className={`group relative flex flex-col overflow-hidden rounded-lg border-2 bg-white text-left transition-all ${
-        isSelected
-          ? "border-black shadow-sm"
-          : "border-black/20 hover:border-black/50"
+      className={`figma-card group relative flex flex-col overflow-hidden text-left ${
+        isSelected ? "figma-card-selected" : ""
       }`}
     >
-      <div className="relative aspect-square overflow-hidden bg-black/[0.03]">
+      <div className="relative aspect-square overflow-hidden bg-[var(--figma-color-bg-secondary,rgba(0,0,0,0.03))]">
         <ImageWithFallback
           src={trend.imageUrl}
           alt={trend.title}
           className="h-full w-full object-cover"
         />
-        <span className="absolute left-2 top-2 text-xs font-mono font-medium text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+        <span className="absolute left-1.5 top-1.5 text-[10px] font-mono font-medium text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
           {String(trend.id).padStart(2, "0")}
         </span>
         {isApplied && (
-          <span className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-600 text-white">
-            <Check className="h-3 w-3" />
+          <span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--figma-color-bg-success,#14ae5c)] text-white">
+            <Check className="h-2.5 w-2.5" />
           </span>
         )}
       </div>
-      <div className="px-2 py-2 border-t border-black/10">
-        <p className="text-[11px] font-medium leading-tight line-clamp-2">
+      <div className="px-2 py-1.5 border-t border-border">
+        <p className="text-[10px] font-medium leading-tight line-clamp-2 text-foreground">
           {trend.title}
         </p>
       </div>

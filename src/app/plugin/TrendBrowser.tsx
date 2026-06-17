@@ -7,13 +7,18 @@ import { ChevronLeft, ChevronRight, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
 import { usePluginContext } from "./PluginController";
 import { trends } from "../data/trends";
+import {
+  formatPromptToastSuffix,
+  getThemeFooterSuffix,
+  resolveActiveThemeSubjectPrompt,
+} from "../data/themes";
 import { TrendCarouselCard } from "../components/TrendCarouselCard";
 import { TrendDetailPanel } from "../components/TrendDetailPanel";
+import { ThemeSelect } from "../components/ThemeSelect";
 import { clearTrendData } from "./utils/figmaMessaging";
 import {
   applyStickerToMasterPrompt,
   getStickerFormatFooterSuffix,
-  getStickerFormatLabel,
   type StickerFormat,
 } from "./utils/promptBuilder";
 import { copyTextToClipboard } from "./utils/copyToClipboard";
@@ -33,6 +38,8 @@ export function TrendBrowser() {
     refreshSelection,
     stickerFormat,
     setStickerFormat,
+    selectedThemeId,
+    setSelectedThemeId,
   } = usePluginContext();
 
   const [selectedTrendId, setSelectedTrendId] = useState(1);
@@ -43,7 +50,8 @@ export function TrendBrowser() {
   const appliedTrendId = currentTrendData?.trendId ?? null;
   const totalPages = Math.ceil(trends.length / CARDS_PER_PAGE);
   const stickerFooterSuffix = getStickerFormatFooterSuffix(stickerFormat);
-  const stickerLabel = getStickerFormatLabel(stickerFormat);
+  const themeFooterSuffix = getThemeFooterSuffix(selectedThemeId, stickerFormat);
+  const toastSuffix = formatPromptToastSuffix(stickerFormat, selectedThemeId);
 
   useEffect(() => {
     if (appliedTrendId) {
@@ -66,17 +74,23 @@ export function TrendBrowser() {
 
   const handleCopyMasterPrompt = async () => {
     const masterPrompt = selectedTrend.midjourneyPrompts.masterPrompt;
+    const themeSubjectPrompt = resolveActiveThemeSubjectPrompt(
+      stickerFormat,
+      selectedThemeId
+    );
     const text =
       stickerFormat === "off"
         ? masterPrompt
-        : applyStickerToMasterPrompt(masterPrompt, stickerFormat);
+        : applyStickerToMasterPrompt(
+            masterPrompt,
+            stickerFormat,
+            themeSubjectPrompt
+          );
     const copied = await copyTextToClipboard(text);
     if (copied) {
       setCopiedMaster(true);
       toast.success(
-        stickerLabel
-          ? `Master prompt copied! (${stickerLabel})`
-          : "Master prompt copied!"
+        toastSuffix ? `Master prompt copied!${toastSuffix}` : "Master prompt copied!"
       );
       setTimeout(() => setCopiedMaster(false), 2000);
     } else {
@@ -103,21 +117,16 @@ export function TrendBrowser() {
         ? "No selection — sticker prompts copy to clipboard only"
         : "No selection — prompts copy to clipboard only"
       : selectedNodes.length === 1
-        ? `1 node: "${selectedNodes[0].name || "Unnamed"}"${stickerFooterSuffix}`
-        : `${selectedNodes.length} nodes selected${stickerFooterSuffix}`;
+        ? `1 node: "${selectedNodes[0].name || "Unnamed"}"${stickerFooterSuffix}${themeFooterSuffix}`
+        : `${selectedNodes.length} nodes selected${stickerFooterSuffix}${themeFooterSuffix}`;
 
   return (
-    <div className="flex flex-col h-screen bg-white text-foreground">
-      {/* Trend carousel section */}
-      <section className="shrink-0 px-5 pt-5 pb-4 border-b border-black/10">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <h1 className="text-lg font-semibold tracking-tight">Design Trend</h1>
-            <div
-              className="flex rounded-full border-2 border-black/20 p-0.5"
-              role="group"
-              aria-label="Sticker format"
-            >
+    <div className="flex flex-col h-screen bg-background text-foreground">
+      <section className="shrink-0 px-4 pt-4 pb-3 border-b border-border">
+        <div className="flex items-center justify-between mb-3 gap-2">
+          <div className="flex items-center gap-2 min-w-0 flex-wrap">
+            <h1 className="figma-section-title shrink-0">Design Trend</h1>
+            <div className="figma-segment-group" role="group" aria-label="Sticker format">
               {STICKER_FORMAT_OPTIONS.map(({ value, label }) => {
                 const isActive = stickerFormat === value;
                 return (
@@ -126,41 +135,42 @@ export function TrendBrowser() {
                     type="button"
                     onClick={() => setStickerFormat(value)}
                     aria-pressed={isActive ? "true" : "false"}
-                    className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
-                      isActive
-                        ? "bg-black text-white"
-                        : "bg-white text-foreground hover:bg-black/5"
-                    }`}
+                    className={`figma-segment ${isActive ? "figma-segment-active" : ""}`}
                   >
                     {label}
                   </button>
                 );
               })}
             </div>
+            <ThemeSelect
+              value={selectedThemeId}
+              onChange={setSelectedThemeId}
+              stickerFormat={stickerFormat}
+            />
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 shrink-0">
             <button
               type="button"
               onClick={handlePrevPage}
               disabled={carouselPage === 0}
-              className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-black/80 bg-white hover:bg-black/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="figma-btn"
               aria-label="Previous trends"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-3.5 w-3.5" />
             </button>
             <button
               type="button"
               onClick={handleNextPage}
               disabled={carouselPage >= totalPages - 1}
-              className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-black/80 bg-white hover:bg-black/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="figma-btn"
               aria-label="Next trends"
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-4 gap-2">
           {visibleTrends.map((trend) => (
             <TrendCarouselCard
               key={trend.id}
@@ -173,23 +183,22 @@ export function TrendBrowser() {
         </div>
       </section>
 
-      {/* Detail panel section */}
-      <section className="flex-1 min-h-0 flex flex-col px-5 py-4">
-        <div className="flex items-center gap-2 mb-3 shrink-0">
-          <h2 className="text-base font-semibold">
+      <section className="flex-1 min-h-0 flex flex-col px-4 py-3">
+        <div className="flex items-center gap-2 mb-2 shrink-0">
+          <h2 className="figma-subtitle">
             {String(selectedTrend.id).padStart(2, "0")} {selectedTrend.title}
           </h2>
           <button
             type="button"
             onClick={handleCopyMasterPrompt}
-            className="flex h-7 w-7 items-center justify-center rounded border border-black/20 bg-white hover:bg-black/5 transition-colors"
+            className="figma-btn"
             title="Copy master prompt"
             aria-label="Copy master prompt"
           >
             {copiedMaster ? (
-              <Check className="h-3.5 w-3.5 text-green-600" />
+              <Check className="h-3.5 w-3.5 figma-icon-success" />
             ) : (
-              <Copy className="h-3.5 w-3.5 text-black/60" />
+              <Copy className="h-3.5 w-3.5 opacity-70" />
             )}
           </button>
         </div>
@@ -197,14 +206,13 @@ export function TrendBrowser() {
         <TrendDetailPanel key={selectedTrend.id} trend={selectedTrend} />
       </section>
 
-      {/* Footer status bar */}
-      <footer className="shrink-0 flex items-center justify-between gap-3 px-5 py-2.5 border-t border-black/10 bg-black/[0.02] text-xs text-muted-foreground">
+      <footer className="figma-footer shrink-0 flex items-center justify-between gap-3 px-4 py-2 text-[11px]">
         <span className="truncate">{selectionLabel}</span>
         {currentTrendData && appliedTrendId === selectedTrendId && (
           <button
             type="button"
             onClick={handleClearTrend}
-            className="shrink-0 text-destructive hover:underline"
+            className="figma-link-danger shrink-0"
           >
             Clear applied trend
           </button>

@@ -10,6 +10,7 @@ import {
   resolveStickerFormatFromLegacy,
   type StickerFormat,
 } from "./utils/promptBuilder";
+import type { ThemeId } from "../data/themes";
 import { TrendBrowser } from "./TrendBrowser";
 import { Toaster } from "../components/ui/sonner";
 
@@ -19,6 +20,8 @@ interface PluginContextState {
   refreshSelection: () => void;
   stickerFormat: StickerFormat;
   setStickerFormat: (format: StickerFormat) => void;
+  selectedThemeId: ThemeId | null;
+  setSelectedThemeId: (id: ThemeId | null) => void;
 }
 
 const PluginContext = createContext<PluginContextState | null>(null);
@@ -36,10 +39,15 @@ function restoreStickerFormat(data: StoredTrendData | null): StickerFormat {
   return resolveStickerFormatFromLegacy(data.stickerFormat, data.stickerMode);
 }
 
+function restoreThemeId(data: StoredTrendData | null): ThemeId | null {
+  return data?.selectedThemeId ?? null;
+}
+
 export function PluginController() {
   const [selectedNodes, setSelectedNodes] = useState<FigmaNode[]>([]);
   const [currentTrendData, setCurrentTrendData] = useState<StoredTrendData | null>(null);
   const [stickerFormat, setStickerFormat] = useState<StickerFormat>("off");
+  const [selectedThemeId, setSelectedThemeId] = useState<ThemeId | null>(null);
 
   const refreshSelection = () => {
     requestSelection();
@@ -55,11 +63,13 @@ export function PluginController() {
           } else {
             setCurrentTrendData(null);
             setStickerFormat("off");
+            setSelectedThemeId(null);
           }
           break;
         case "trend-data":
           setCurrentTrendData(message.data);
           setStickerFormat(restoreStickerFormat(message.data));
+          setSelectedThemeId(restoreThemeId(message.data));
           break;
         case "save-success":
         case "clear-success":
@@ -80,6 +90,8 @@ export function PluginController() {
     refreshSelection,
     stickerFormat,
     setStickerFormat,
+    selectedThemeId,
+    setSelectedThemeId,
   };
 
   return (

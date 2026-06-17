@@ -3,6 +3,7 @@
  */
 
 import type { StickerFormat } from "./promptBuilder";
+import type { ThemeId } from "../../data/themes";
 
 export interface FigmaNode {
   id: string;
@@ -21,6 +22,7 @@ export interface StoredTrendData {
   stickerFormat?: StickerFormat;
   /** @deprecated Use stickerFormat; true maps to "single" on restore */
   stickerMode?: boolean;
+  selectedThemeId?: ThemeId | null;
 }
 
 export interface SelectionChangedMessage {
