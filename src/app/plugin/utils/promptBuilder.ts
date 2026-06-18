@@ -4,6 +4,8 @@
  */
 
 import {
+  STICKER_DIE_CUT_APPEARANCE,
+  STICKER_DIE_CUT_NEGATIVE_ADDITIONS,
   STICKER_SHEET_ASPECT_RATIO,
   STICKER_SHEET_NEGATIVE_ADDITIONS,
   STICKER_SHEET_SUFFIX,
@@ -12,14 +14,16 @@ import {
 export type StickerFormat = "off" | "single" | "sheet";
 
 export const STICKER_SINGLE_SUFFIX =
-  "die-cut vinyl sticker, thick white outline border following subject silhouette, isolated cutout subject, white background, subtle drop shadow, single centered sticker";
+  `${STICKER_DIE_CUT_APPEARANCE}, single centered sticker`;
 
 export const STICKER_SINGLE_NEGATIVE_ADDITIONS =
-  "full scene background, rectangular photo crop, no border, multiple scattered subjects, sticker sheet layout";
+  `full scene background, no border, multiple scattered subjects, sticker sheet layout, ${STICKER_DIE_CUT_NEGATIVE_ADDITIONS}`;
 
 export const STICKER_SINGLE_ASPECT_RATIO = "--ar 1:1";
 
 export {
+  STICKER_DIE_CUT_APPEARANCE,
+  STICKER_DIE_CUT_NEGATIVE_ADDITIONS,
   STICKER_SHEET_ASPECT_RATIO,
   STICKER_SHEET_NEGATIVE_ADDITIONS,
   STICKER_SHEET_SUFFIX,

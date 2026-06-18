@@ -8,6 +8,7 @@
     "build:ui": "vite build",
     "build:code": "esbuild src/plugin-code.ts --bundle --outfile=dist/code.js --target=es2017",
     "export-prompts": "esbuild scripts/export-prompts.ts --bundle --platform=node --format=esm --outfile=scripts/export-prompts.mjs --loader:.png=empty && node scripts/export-prompts.mjs",
+    "slice-sheet": "esbuild scripts/slice-sticker-sheet.ts --bundle --platform=node --format=esm --outfile=scripts/slice-sticker-sheet.mjs --external:sharp --loader:.png=empty && node scripts/slice-sticker-sheet.mjs",
     "watch": "concurrently \"vite build --watch\" \"esbuild src/plugin-code.ts --bundle --outfile=dist/code.js --watch --target=es2017\""
   },
   "dependencies": {
@@ -25,6 +26,7 @@
     "@vitejs/plugin-react": "^4.7.0",
     "concurrently": "^8.2.2",
     "esbuild": "^0.20.2",
+    "sharp": "^0.34.2",
     "tailwindcss": "^4.1.12",
     "typescript": "^5.9.3",
     "vite": "^6.3.5",
