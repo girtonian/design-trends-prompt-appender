@@ -46,8 +46,8 @@ export function isAspectRatioPreset(value: string): value is AspectRatioPreset {
 }
 
 export function getEffectiveAspectRatio(
-  stickerFormat: "off" | "single" | "sheet",
+  _stickerFormat: "off" | "single" | "sheet",
   selected: AspectRatioPreset
 ): AspectRatioPreset {
-  return stickerFormat === "sheet" ? "16:9" : selected;
+  return selected;
 }

@@ -23,8 +23,9 @@ import {
 import { TrendBrowser } from "./TrendBrowser";
 import { Toaster } from "../components/ui/sonner";
 
-export interface ActiveGenerationFrame {
-  frameId: string;
+export interface ActiveGenerationTarget {
+  nodeId: string;
+  nodeName: string;
   width: number;
   height: number;
   aspectRatio: AspectRatioPreset;
@@ -40,7 +41,7 @@ interface PluginContextState {
   setSelectedThemeId: (id: ThemeId | null) => void;
   selectedAspectRatio: AspectRatioPreset;
   setSelectedAspectRatio: (preset: AspectRatioPreset) => void;
-  activeGenerationFrame: ActiveGenerationFrame | null;
+  activeGenerationTarget: ActiveGenerationTarget | null;
 }
 
 const PluginContext = createContext<PluginContextState | null>(null);
@@ -69,8 +70,8 @@ export function PluginController() {
   const [selectedThemeId, setSelectedThemeId] = useState<ThemeId | null>(null);
   const [selectedAspectRatio, setSelectedAspectRatio] =
     useState<AspectRatioPreset>(DEFAULT_ASPECT_RATIO);
-  const [activeGenerationFrame, setActiveGenerationFrame] =
-    useState<ActiveGenerationFrame | null>(null);
+  const [activeGenerationTarget, setActiveGenerationTarget] =
+    useState<ActiveGenerationTarget | null>(null);
 
   const refreshSelection = () => {
     requestSelection();
@@ -82,15 +83,22 @@ export function PluginController() {
         case "selection-changed":
           setSelectedNodes(message.selection);
           if (message.selection.length === 1) {
-            getTrendData(message.selection[0].id);
+            const node = message.selection[0];
+            if (!node.isMakeImageTarget) {
+              getTrendData(node.id);
+            } else {
+              setCurrentTrendData(null);
+            }
           } else {
             setCurrentTrendData(null);
           }
           break;
         case "trend-data":
           setCurrentTrendData(message.data);
-          setStickerFormat(restoreStickerFormat(message.data));
-          setSelectedThemeId(restoreThemeId(message.data));
+          if (message.data) {
+            setStickerFormat(restoreStickerFormat(message.data));
+            setSelectedThemeId(restoreThemeId(message.data));
+          }
           break;
         case "save-success":
         case "clear-success":
@@ -101,13 +109,16 @@ export function PluginController() {
             setSelectedAspectRatio(message.aspectRatio);
           }
           break;
-        case "generation-frame-ready":
-          setActiveGenerationFrame({
-            frameId: message.frameId,
-            width: message.width,
-            height: message.height,
-            aspectRatio: message.aspectRatio,
-          });
+        case "generation-target-ready":
+          if (message.resized && message.nodeId && message.nodeName) {
+            setActiveGenerationTarget({
+              nodeId: message.nodeId,
+              nodeName: message.nodeName,
+              width: message.width,
+              height: message.height,
+              aspectRatio: message.aspectRatio,
+            });
+          }
           break;
         default:
           break;
@@ -128,7 +139,7 @@ export function PluginController() {
     setSelectedThemeId,
     selectedAspectRatio,
     setSelectedAspectRatio,
-    activeGenerationFrame,
+    activeGenerationTarget,
   };
 
   return (

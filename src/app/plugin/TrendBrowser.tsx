@@ -1,5 +1,5 @@
 /**
- * Main plugin UI — trend grid (tap card to copy master prompt + prepare Make Image frame)
+ * Main plugin UI — trend grid (tap card to copy prompt + resize Make an image placeholder)
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -17,8 +17,9 @@ import { ThemeSelect } from "../components/ThemeSelect";
 import { AspectRatioSelect } from "../components/AspectRatioSelect";
 import {
   clearTrendData,
-  prepareGenerationFrame,
-  resizeGenerationFrame,
+  onPluginMessage,
+  prepareGenerationTarget,
+  resizeGenerationTarget,
   saveAspectRatioPreference,
   saveTrendData,
 } from "./utils/figmaMessaging";
@@ -28,10 +29,14 @@ import {
   type StickerFormat,
 } from "./utils/promptBuilder";
 import {
-  getDimensionsForPreset,
   getEffectiveAspectRatio,
   type AspectRatioPreset,
 } from "./utils/aspectRatioPresets";
+import {
+  formatSheetLayoutLabel,
+  getCanvasDimensionsForMode,
+  getStickerSheetLayout,
+} from "./utils/stickerSheetLayout";
 import { copyTextToClipboard } from "./utils/copyToClipboard";
 
 /** Set to true to restore TrendDetailPanel import + bottom variations section */
@@ -46,6 +51,9 @@ const STICKER_FORMAT_OPTIONS: { value: StickerFormat; label: string }[] = [
 const MAKE_IMAGE_TOAST =
   "Prompt copied — open Make an image and paste (⌘V)";
 
+const NO_PLACEHOLDER_TOAST =
+  "Prompt copied — select a Make an image placeholder to set size";
+
 export function TrendBrowser() {
   const {
     selectedNodes,
@@ -57,12 +65,11 @@ export function TrendBrowser() {
     setSelectedThemeId,
     selectedAspectRatio,
     setSelectedAspectRatio,
-    activeGenerationFrame,
+    activeGenerationTarget,
   } = usePluginContext();
 
   const [selectedTrendId, setSelectedTrendId] = useState(1);
   const [copiedTrendId, setCopiedTrendId] = useState<number | null>(null);
-  const [lastTrendTitle, setLastTrendTitle] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const [isNarrow, setIsNarrow] = useState(false);
 
@@ -74,7 +81,16 @@ export function TrendBrowser() {
     stickerFormat,
     selectedAspectRatio
   );
-  const aspectRatioLocked = stickerFormat === "sheet";
+  const sheetLayout =
+    stickerFormat === "sheet"
+      ? getStickerSheetLayout(effectiveAspectRatio)
+      : null;
+  const hasMakeImageTargetSelected = selectedNodes.some(
+    (node) => node.isMakeImageTarget
+  );
+  const nodesToSaveTrend = selectedNodes.filter(
+    (node) => !node.isMakeImageTarget
+  );
 
   useEffect(() => {
     if (appliedTrendId) {
@@ -96,16 +112,30 @@ export function TrendBrowser() {
   }, []);
 
   useEffect(() => {
-    if (stickerFormat !== "sheet") return;
+    const cleanup = onPluginMessage((message) => {
+      if (message.type !== "generation-target-ready") return;
+      if (!message.userInitiated) return;
+      if (!message.resized) {
+        toast.message("Select a Make an image placeholder to resize");
+      }
+    });
 
-    const { width, height } = getDimensionsForPreset("16:9");
-    resizeGenerationFrame({
-      aspectRatio: "16:9",
+    return cleanup;
+  }, []);
+
+  const resizeCanvasForCurrentMode = (
+    format: StickerFormat,
+    aspectRatio: AspectRatioPreset,
+    userInitiated: boolean
+  ) => {
+    const { width, height } = getCanvasDimensionsForMode(format, aspectRatio);
+    resizeGenerationTarget({
+      aspectRatio,
       width,
       height,
-      trendTitle: lastTrendTitle ?? undefined,
+      userInitiated,
     });
-  }, [stickerFormat, lastTrendTitle]);
+  };
 
   const copyMasterForTrend = async (trend: Trend) => {
     const themeSubjectPrompt = resolveActiveThemeSubjectPrompt(
@@ -115,13 +145,14 @@ export function TrendBrowser() {
     const text = buildMasterPromptText(
       trend.midjourneyPrompts.masterPrompt,
       stickerFormat,
-      themeSubjectPrompt
+      themeSubjectPrompt,
+      effectiveAspectRatio
     );
     const copied = await copyTextToClipboard(text);
 
-    if (selectedNodes.length > 0) {
+    if (nodesToSaveTrend.length > 0) {
       saveTrendData(
-        selectedNodes.map((n) => n.id),
+        nodesToSaveTrend.map((n) => n.id),
         {
           trendId: trend.id,
           trendTitle: trend.title,
@@ -135,29 +166,33 @@ export function TrendBrowser() {
       );
     }
 
-    const { width, height } = getDimensionsForPreset(effectiveAspectRatio);
-    prepareGenerationFrame({
-      trendId: trend.id,
-      trendTitle: trend.title,
+    const { width, height } = getCanvasDimensionsForMode(
+      stickerFormat,
+      effectiveAspectRatio
+    );
+    prepareGenerationTarget({
       aspectRatio: effectiveAspectRatio,
       width,
       height,
     });
-    setLastTrendTitle(trend.title);
+
+    const promptToast = hasMakeImageTargetSelected
+      ? MAKE_IMAGE_TOAST
+      : NO_PLACEHOLDER_TOAST;
 
     if (copied) {
-      if (selectedNodes.length > 0) {
+      if (nodesToSaveTrend.length > 0) {
         toast.success(
-          `${MAKE_IMAGE_TOAST} · Saved to ${selectedNodes.length} node${selectedNodes.length !== 1 ? "s" : ""}${toastSuffix}`
+          `${promptToast} · Saved to ${nodesToSaveTrend.length} node${nodesToSaveTrend.length !== 1 ? "s" : ""}${toastSuffix}`
         );
       } else {
         toast.success(
-          toastSuffix ? `${MAKE_IMAGE_TOAST}${toastSuffix}` : MAKE_IMAGE_TOAST
+          toastSuffix ? `${promptToast}${toastSuffix}` : promptToast
         );
       }
-    } else if (selectedNodes.length > 0) {
+    } else if (nodesToSaveTrend.length > 0) {
       toast.success(
-        `Generation frame ready · Saved to ${selectedNodes.length} node${selectedNodes.length !== 1 ? "s" : ""}${toastSuffix} (clipboard unavailable)`
+        `Prompt saved to ${nodesToSaveTrend.length} node${nodesToSaveTrend.length !== 1 ? "s" : ""}${toastSuffix} (clipboard unavailable)`
       );
     } else {
       toast.error("Failed to copy prompt");
@@ -176,41 +211,56 @@ export function TrendBrowser() {
   };
 
   const handleAspectRatioChange = (preset: AspectRatioPreset) => {
-    if (aspectRatioLocked) return;
+    if (preset === selectedAspectRatio) {
+      resizeCanvasForCurrentMode(stickerFormat, preset, true);
+      return;
+    }
 
     setSelectedAspectRatio(preset);
     saveAspectRatioPreference(preset);
+    resizeCanvasForCurrentMode(stickerFormat, preset, true);
+  };
 
-    const { width, height } = getDimensionsForPreset(preset);
-    resizeGenerationFrame({
-      aspectRatio: preset,
-      width,
-      height,
-      trendTitle: lastTrendTitle ?? undefined,
-    });
+  const handleStickerFormatChange = (value: StickerFormat) => {
+    const enteringSheet = value === "sheet" && stickerFormat !== "sheet";
+    setStickerFormat(value);
+    if (enteringSheet && !selectedThemeId) {
+      toast.message("Choose a theme for sticker subjects");
+    }
+    if (value === "sheet") {
+      resizeCanvasForCurrentMode("sheet", selectedAspectRatio, false);
+    }
   };
 
   const handleClearTrend = () => {
-    if (selectedNodes.length === 0) return;
-    const nodeIds = selectedNodes.map((n) => n.id);
+    if (nodesToSaveTrend.length === 0) return;
+    const nodeIds = nodesToSaveTrend.map((n) => n.id);
     clearTrendData(nodeIds);
     toast.success(`Cleared trend from ${nodeIds.length} node${nodeIds.length !== 1 ? "s" : ""}`);
     refreshSelection();
   };
 
-  const frameLabel = activeGenerationFrame
-    ? `Frame ${activeGenerationFrame.aspectRatio} (${activeGenerationFrame.width}×${activeGenerationFrame.height})`
+  const targetLabel = activeGenerationTarget
+    ? `Image placeholder · ${activeGenerationTarget.aspectRatio} (${activeGenerationTarget.width}×${activeGenerationTarget.height})`
     : null;
+
+  const sheetFooterSuffix = sheetLayout
+    ? ` · ${formatSheetLayoutLabel(sheetLayout)}`
+    : "";
 
   const selectionLabel =
     selectedNodes.length === 0
-      ? frameLabel ??
-        (stickerFormat !== "off"
-          ? "No selection — sticker prompts copy to clipboard only"
-          : "No selection — prompts copy to clipboard only")
+      ? targetLabel ??
+        (stickerFormat === "sheet"
+          ? `Sticker sheet · ${effectiveAspectRatio}${sheetFooterSuffix}`
+          : stickerFormat !== "off"
+            ? "No selection — sticker prompts copy to clipboard only"
+            : "No selection — prompts copy to clipboard only")
       : selectedNodes.length === 1
-        ? `1 node: "${selectedNodes[0].name || "Unnamed"}"${stickerFooterSuffix}${themeFooterSuffix}`
-        : `${selectedNodes.length} nodes selected${stickerFooterSuffix}${themeFooterSuffix}`;
+        ? hasMakeImageTargetSelected
+          ? `1 node: "${selectedNodes[0].name || "Unnamed"}" · ${effectiveAspectRatio}${stickerFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`
+          : `1 node: "${selectedNodes[0].name || "Unnamed"}"${stickerFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`
+        : `${selectedNodes.length} nodes selected${stickerFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`;
 
   return (
     <div
@@ -229,7 +279,7 @@ export function TrendBrowser() {
                 <button
                   key={value}
                   type="button"
-                  onClick={() => setStickerFormat(value)}
+                  onClick={() => handleStickerFormatChange(value)}
                   aria-pressed={isActive ? "true" : "false"}
                   className={`figma-segment ${isActive ? "figma-segment-active" : ""}`}
                 >
@@ -248,7 +298,6 @@ export function TrendBrowser() {
         <AspectRatioSelect
           value={effectiveAspectRatio}
           onChange={handleAspectRatioChange}
-          disabled={aspectRatioLocked}
         />
 
         <div className="figma-trend-grid flex-1 min-h-0">
@@ -267,7 +316,7 @@ export function TrendBrowser() {
 
       <footer className="figma-footer shrink-0 flex items-center justify-between gap-3 px-4 py-2 text-[11px]">
         <span className="truncate">{selectionLabel}</span>
-        {currentTrendData && appliedTrendId === selectedTrendId && (
+        {currentTrendData && appliedTrendId === selectedTrendId && nodesToSaveTrend.length > 0 && (
           <button
             type="button"
             onClick={handleClearTrend}

@@ -5,12 +5,13 @@
 import type { StickerFormat } from "./promptBuilder";
 import type { ThemeId } from "../../data/themes";
 import type { AspectRatioPreset } from "./aspectRatioPresets";
-import type { PrepareGenerationFramePayload } from "./generationFrame";
+import type { ResizeGenerationTargetPayload } from "./generationFrame";
 
 export interface FigmaNode {
   id: string;
   name: string;
   type: string;
+  isMakeImageTarget?: boolean;
 }
 
 export interface StoredTrendData {
@@ -119,19 +120,14 @@ export function resizePluginUI(width: number, height: number) {
   });
 }
 
-export function prepareGenerationFrame(payload: PrepareGenerationFramePayload) {
+export function prepareGenerationTarget(payload: ResizeGenerationTargetPayload) {
   postToPlugin({
     type: "prepare-generation-frame",
     ...payload,
   });
 }
 
-export function resizeGenerationFrame(payload: {
-  aspectRatio: AspectRatioPreset;
-  width: number;
-  height: number;
-  trendTitle?: string;
-}) {
+export function resizeGenerationTarget(payload: ResizeGenerationTargetPayload) {
   postToPlugin({
     type: "resize-generation-frame",
     ...payload,

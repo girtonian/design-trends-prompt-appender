@@ -1,26 +1,26 @@
 import type { AspectRatioPreset } from "../plugin/utils/aspectRatioPresets";
 
-export interface GenerationTargetData {
+export interface MakeImageTargetData {
   aspectRatio: AspectRatioPreset;
-  trendId: number;
-  trendTitle: string;
-  createdAt: number;
+  updatedAt: number;
 }
 
-export interface PrepareGenerationFramePayload {
-  trendId: number;
-  trendTitle: string;
+export interface ResizeGenerationTargetPayload {
   aspectRatio: AspectRatioPreset;
   width: number;
   height: number;
+  userInitiated?: boolean;
 }
 
-export interface GenerationFrameReadyMessage {
-  type: "generation-frame-ready";
-  frameId: string;
+export interface GenerationTargetReadyMessage {
+  type: "generation-target-ready";
+  resized: boolean;
+  userInitiated: boolean;
+  aspectRatio: AspectRatioPreset;
   width: number;
   height: number;
-  aspectRatio: AspectRatioPreset;
+  nodeId?: string;
+  nodeName?: string;
 }
 
 export interface AspectRatioPreferenceMessage {
@@ -28,12 +28,9 @@ export interface AspectRatioPreferenceMessage {
   aspectRatio: AspectRatioPreset | null;
 }
 
+/** @deprecated Legacy plugin-created white frames */
 export const GENERATION_TARGET_KEY = "generationTarget";
-export const ASPECT_RATIO_STORAGE_KEY = "aspectRatioPreference";
 
-export function getGenerationFrameName(
-  aspectRatio: AspectRatioPreset,
-  trendTitle: string
-): string {
-  return `Make Image ${aspectRatio} — ${trendTitle}`;
-}
+export const MAKE_IMAGE_TARGET_KEY = "makeImageTarget";
+
+export const ASPECT_RATIO_STORAGE_KEY = "aspectRatioPreference";

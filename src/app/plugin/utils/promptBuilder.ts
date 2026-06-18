@@ -3,12 +3,16 @@
  * Extracted from PromptGenerator component for reusability
  */
 
+import type { AspectRatioPreset } from "./aspectRatioPresets";
 import {
   STICKER_DIE_CUT_APPEARANCE,
   STICKER_DIE_CUT_NEGATIVE_ADDITIONS,
   STICKER_SHEET_ASPECT_RATIO,
   STICKER_SHEET_NEGATIVE_ADDITIONS,
   STICKER_SHEET_SUFFIX,
+  buildStickerSheetSuffix,
+  getStickerSheetAspectRatioFlag,
+  getStickerSheetLayout,
 } from "./stickerSheetLayout";
 
 export type StickerFormat = "off" | "single" | "sheet";
@@ -32,6 +36,7 @@ export {
 export interface BuildFullPromptOptions {
   stickerFormat?: StickerFormat;
   themeSubjectPrompt?: string | null;
+  aspectRatio?: AspectRatioPreset;
 }
 
 export function resolveStickerFormatFromLegacy(
@@ -102,6 +107,7 @@ export function extractStyleAnchor(masterPrompt: string): string {
 export interface BuildWeaveThemePromptOptions {
   stickerFormat?: Extract<StickerFormat, "off" | "sheet">;
   themeSubjectPrompt?: string | null;
+  aspectRatio?: AspectRatioPreset;
 }
 
 export function buildWeaveThemePrompt(
@@ -111,7 +117,7 @@ export function buildWeaveThemePrompt(
   subject: string,
   options: BuildWeaveThemePromptOptions = { stickerFormat: "sheet" }
 ): string {
-  const { stickerFormat = "sheet", themeSubjectPrompt = null } = options;
+  const { stickerFormat = "sheet", themeSubjectPrompt = null, aspectRatio = "16:9" } = options;
   const hook = cleanVariation(variation)
     .replace(/--style \S+/g, "")
     .trim();
@@ -122,7 +128,7 @@ export function buildWeaveThemePrompt(
     positiveParts.push(themeSubjectPrompt);
   }
   if (stickerFormat === "sheet") {
-    positiveParts.push(STICKER_SHEET_SUFFIX);
+    positiveParts.push(buildStickerSheetSuffix(getStickerSheetLayout(aspectRatio)));
   }
 
   const mergedNegatives =
@@ -143,7 +149,8 @@ export function buildStickerSheetBatchPrompt(
   variation: string,
   negativePrompts: string,
   subject: string,
-  themeSubjectPrompt?: string | null
+  themeSubjectPrompt?: string | null,
+  aspectRatio: AspectRatioPreset = "16:9"
 ): string {
   const hook = cleanVariation(variation)
     .replace(/--style \S+/g, "")
@@ -153,7 +160,7 @@ export function buildStickerSheetBatchPrompt(
   if (themeSubjectPrompt) {
     positiveParts.push(themeSubjectPrompt);
   }
-  positiveParts.push(STICKER_SHEET_SUFFIX);
+  positiveParts.push(buildStickerSheetSuffix(getStickerSheetLayout(aspectRatio)));
 
   const mergedNegatives = `${negativePrompts}, ${STICKER_SHEET_NEGATIVE_ADDITIONS}`;
   return `${positiveParts.join(", ")}. No ${mergedNegatives}`;
@@ -165,14 +172,17 @@ export function buildStickerSheetBatchPrompt(
 export function applyStickerToMasterPrompt(
   masterPrompt: string,
   stickerFormat: "single" | "sheet",
-  themeSubjectPrompt?: string | null
+  themeSubjectPrompt?: string | null,
+  aspectRatio: AspectRatioPreset = "16:9"
 ): string {
   const parts = [masterPrompt];
   if (themeSubjectPrompt) {
     parts.push(themeSubjectPrompt);
   }
   parts.push(
-    stickerFormat === "sheet" ? STICKER_SHEET_SUFFIX : STICKER_SINGLE_SUFFIX
+    stickerFormat === "sheet"
+      ? buildStickerSheetSuffix(getStickerSheetLayout(aspectRatio))
+      : STICKER_SINGLE_SUFFIX
   );
   return parts.join(", ");
 }
@@ -183,7 +193,8 @@ export function applyStickerToMasterPrompt(
 export function buildMasterPromptText(
   masterPrompt: string,
   stickerFormat: StickerFormat,
-  themeSubjectPrompt?: string | null
+  themeSubjectPrompt?: string | null,
+  aspectRatio: AspectRatioPreset = "16:9"
 ): string {
   if (stickerFormat === "off") {
     return masterPrompt;
@@ -191,7 +202,8 @@ export function buildMasterPromptText(
   return applyStickerToMasterPrompt(
     masterPrompt,
     stickerFormat,
-    themeSubjectPrompt
+    themeSubjectPrompt,
+    aspectRatio
   );
 }
 
@@ -213,12 +225,13 @@ export function buildFullPrompt(
 ): string {
   const stickerFormat = options.stickerFormat ?? "off";
   const themeSubjectPrompt = options.themeSubjectPrompt ?? null;
+  const sheetAspectRatio = options.aspectRatio ?? "16:9";
 
   const aspectRatio =
     stickerFormat === "single"
       ? STICKER_SINGLE_ASPECT_RATIO
       : stickerFormat === "sheet"
-        ? STICKER_SHEET_ASPECT_RATIO
+        ? getStickerSheetAspectRatioFlag(sheetAspectRatio)
         : extractAspectRatio(variation) || aspectRatios[0];
 
   const cleanedVariation = cleanVariation(variation);
@@ -231,7 +244,7 @@ export function buildFullPrompt(
   if (stickerFormat === "single") {
     positiveParts.push(STICKER_SINGLE_SUFFIX);
   } else if (stickerFormat === "sheet") {
-    positiveParts.push(STICKER_SHEET_SUFFIX);
+    positiveParts.push(buildStickerSheetSuffix(getStickerSheetLayout(sheetAspectRatio)));
   }
 
   const mergedNegatives =
