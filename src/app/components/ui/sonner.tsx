@@ -4,7 +4,11 @@ export function Toaster() {
   return (
     <Sonner
       theme="light"
+      closeButton
       className="toaster group"
+      toastOptions={{
+        closeButtonAriaLabel: "Dismiss notification",
+      }}
       style={
         {
           "--normal-bg": "var(--popover)",

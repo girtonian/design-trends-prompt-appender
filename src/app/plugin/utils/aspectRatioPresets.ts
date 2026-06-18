@@ -45,6 +45,40 @@ export function isAspectRatioPreset(value: string): value is AspectRatioPreset {
   return ASPECT_RATIO_PRESETS.includes(value as AspectRatioPreset);
 }
 
+const PRESET_RATIOS: Record<AspectRatioPreset, number> = {
+  "16:9": 16 / 9,
+  "4:3": 4 / 3,
+  "3:2": 3 / 2,
+  "1:1": 1,
+  "2:3": 2 / 3,
+  "3:4": 3 / 4,
+  "9:16": 9 / 16,
+};
+
+export function getClosestAspectRatioPreset(
+  width: number,
+  height: number
+): AspectRatioPreset {
+  if (width <= 0 || height <= 0) {
+    return DEFAULT_ASPECT_RATIO;
+  }
+
+  const ratio = width / height;
+  let closest = DEFAULT_ASPECT_RATIO;
+  let smallestDelta = Infinity;
+
+  for (const preset of ASPECT_RATIO_PRESETS) {
+    const presetRatio = PRESET_RATIOS[preset];
+    const delta = Math.abs(Math.log(ratio) - Math.log(presetRatio));
+    if (delta < smallestDelta) {
+      smallestDelta = delta;
+      closest = preset;
+    }
+  }
+
+  return closest;
+}
+
 export function getEffectiveAspectRatio(
   _stickerFormat: "off" | "single" | "sheet",
   selected: AspectRatioPreset

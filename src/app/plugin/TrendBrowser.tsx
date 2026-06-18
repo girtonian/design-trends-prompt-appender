@@ -18,7 +18,6 @@ import { AspectRatioSelect } from "../components/AspectRatioSelect";
 import {
   clearTrendData,
   onPluginMessage,
-  prepareGenerationTarget,
   resizeGenerationTarget,
   saveAspectRatioPreference,
   saveTrendData,
@@ -166,16 +165,6 @@ export function TrendBrowser() {
       );
     }
 
-    const { width, height } = getCanvasDimensionsForMode(
-      stickerFormat,
-      effectiveAspectRatio
-    );
-    prepareGenerationTarget({
-      aspectRatio: effectiveAspectRatio,
-      width,
-      height,
-    });
-
     const promptToast = hasMakeImageTargetSelected
       ? MAKE_IMAGE_TOAST
       : NO_PLACEHOLDER_TOAST;
@@ -227,9 +216,6 @@ export function TrendBrowser() {
     if (enteringSheet && !selectedThemeId) {
       toast.message("Choose a theme for sticker subjects");
     }
-    if (value === "sheet") {
-      resizeCanvasForCurrentMode("sheet", selectedAspectRatio, false);
-    }
   };
 
   const handleClearTrend = () => {
@@ -248,6 +234,11 @@ export function TrendBrowser() {
     ? ` · ${formatSheetLayoutLabel(sheetLayout)}`
     : "";
 
+  const makeImageAspectLabel =
+    activeGenerationTarget && hasMakeImageTargetSelected
+      ? `${activeGenerationTarget.aspectRatio} (${activeGenerationTarget.width}×${activeGenerationTarget.height})`
+      : effectiveAspectRatio;
+
   const selectionLabel =
     selectedNodes.length === 0
       ? targetLabel ??
@@ -258,7 +249,7 @@ export function TrendBrowser() {
             : "No selection — prompts copy to clipboard only")
       : selectedNodes.length === 1
         ? hasMakeImageTargetSelected
-          ? `1 node: "${selectedNodes[0].name || "Unnamed"}" · ${effectiveAspectRatio}${stickerFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`
+          ? `1 node: "${selectedNodes[0].name || "Unnamed"}" · ${makeImageAspectLabel}${stickerFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`
           : `1 node: "${selectedNodes[0].name || "Unnamed"}"${stickerFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`
         : `${selectedNodes.length} nodes selected${stickerFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`;
 

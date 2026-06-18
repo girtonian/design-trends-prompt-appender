@@ -3,7 +3,7 @@
  * Manages plugin state, Figma selection changes, and coordinates UI
  */
 
-import { useState, useEffect, createContext, useContext } from "react";
+import { useState, useEffect, useRef, createContext, useContext } from "react";
 import {
   StoredTrendData,
   onPluginMessage,
@@ -18,6 +18,7 @@ import {
 import type { ThemeId } from "../data/themes";
 import {
   DEFAULT_ASPECT_RATIO,
+  getClosestAspectRatioPreset,
   type AspectRatioPreset,
 } from "./utils/aspectRatioPresets";
 import { TrendBrowser } from "./TrendBrowser";
@@ -72,6 +73,7 @@ export function PluginController() {
     useState<AspectRatioPreset>(DEFAULT_ASPECT_RATIO);
   const [activeGenerationTarget, setActiveGenerationTarget] =
     useState<ActiveGenerationTarget | null>(null);
+  const aspectSyncedFromCanvasRef = useRef(false);
 
   const refreshSelection = () => {
     requestSelection();
@@ -84,12 +86,37 @@ export function PluginController() {
           setSelectedNodes(message.selection);
           if (message.selection.length === 1) {
             const node = message.selection[0];
-            if (!node.isMakeImageTarget) {
+            if (
+              node.isMakeImageTarget &&
+              node.width != null &&
+              node.height != null
+            ) {
+              const aspectRatio = getClosestAspectRatioPreset(
+                node.width,
+                node.height
+              );
+              aspectSyncedFromCanvasRef.current = true;
+              setSelectedAspectRatio(aspectRatio);
+              setActiveGenerationTarget({
+                nodeId: node.id,
+                nodeName: node.name,
+                width: node.width,
+                height: node.height,
+                aspectRatio,
+              });
+              setCurrentTrendData(null);
+            } else if (!node.isMakeImageTarget) {
+              aspectSyncedFromCanvasRef.current = false;
+              setActiveGenerationTarget(null);
               getTrendData(node.id);
             } else {
+              aspectSyncedFromCanvasRef.current = false;
+              setActiveGenerationTarget(null);
               setCurrentTrendData(null);
             }
           } else {
+            aspectSyncedFromCanvasRef.current = false;
+            setActiveGenerationTarget(null);
             setCurrentTrendData(null);
           }
           break;
@@ -105,7 +132,7 @@ export function PluginController() {
           refreshSelection();
           break;
         case "aspect-ratio-preference":
-          if (message.aspectRatio) {
+          if (message.aspectRatio && !aspectSyncedFromCanvasRef.current) {
             setSelectedAspectRatio(message.aspectRatio);
           }
           break;

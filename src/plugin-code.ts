@@ -76,12 +76,29 @@ async function persistUiSize(size: { width: number; height: number }) {
 function postSelectionChanged() {
   figma.ui.postMessage({
     type: 'selection-changed',
-    selection: figma.currentPage.selection.map((node) => ({
-      id: node.id,
-      name: node.name,
-      type: node.type,
-      isMakeImageTarget: isMakeImageTarget(node),
-    })),
+    selection: figma.currentPage.selection.map((node) => {
+      const isTarget = isMakeImageTarget(node);
+      const entry: {
+        id: string;
+        name: string;
+        type: string;
+        isMakeImageTarget: boolean;
+        width?: number;
+        height?: number;
+      } = {
+        id: node.id,
+        name: node.name,
+        type: node.type,
+        isMakeImageTarget: isTarget,
+      };
+
+      if (isTarget && 'width' in node && 'height' in node) {
+        entry.width = Math.round(node.width);
+        entry.height = Math.round(node.height);
+      }
+
+      return entry;
+    }),
   });
 }
 

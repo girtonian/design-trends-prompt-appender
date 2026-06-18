@@ -342,3 +342,22 @@ body {
 .figma-resize-handle:hover {
   background: var(--figma-color-bg-brand-tertiary, rgba(13, 153, 255, 0.12));
 }
+
+/* Sonner toasts — close button always visible in top-right */
+:where([data-sonner-toaster][dir="ltr"] button[data-close-button]) {
+  --toast-close-button-start: auto;
+  --toast-close-button-end: 0;
+  --toast-close-button-transform: translate(35%, -35%);
+  opacity: 1;
+}
+
+:where([data-sonner-toaster][dir="rtl"] button[data-close-button]) {
+  --toast-close-button-start: 0;
+  --toast-close-button-end: auto;
+  --toast-close-button-transform: translate(-35%, -35%);
+  opacity: 1;
+}
+
+:where([data-sonner-toaster] button[data-close-button]:hover) {
+  background: var(--figma-color-bg-hover, rgba(0, 0, 0, 0.06));
+}

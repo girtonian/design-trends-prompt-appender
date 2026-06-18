@@ -12,6 +12,8 @@ export interface FigmaNode {
   name: string;
   type: string;
   isMakeImageTarget?: boolean;
+  width?: number;
+  height?: number;
 }
 
 export interface StoredTrendData {
