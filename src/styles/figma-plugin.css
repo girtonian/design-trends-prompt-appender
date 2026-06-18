@@ -76,6 +76,21 @@ body {
   color: var(--figma-color-text-onbrand, #ffffff);
 }
 
+.figma-aspect-row {
+  width: 100%;
+}
+
+.figma-aspect-segments {
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.figma-aspect-segment {
+  padding: 2px 6px;
+  min-width: 32px;
+}
+
 .figma-select {
   height: 28px;
   min-width: 96px;

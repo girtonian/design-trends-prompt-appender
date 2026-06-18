@@ -4,6 +4,8 @@
 
 import type { StickerFormat } from "./promptBuilder";
 import type { ThemeId } from "../../data/themes";
+import type { AspectRatioPreset } from "./aspectRatioPresets";
+import type { PrepareGenerationFramePayload } from "./generationFrame";
 
 export interface FigmaNode {
   id: string;
@@ -114,5 +116,37 @@ export function resizePluginUI(width: number, height: number) {
     type: "resize-ui",
     width,
     height,
+  });
+}
+
+export function prepareGenerationFrame(payload: PrepareGenerationFramePayload) {
+  postToPlugin({
+    type: "prepare-generation-frame",
+    ...payload,
+  });
+}
+
+export function resizeGenerationFrame(payload: {
+  aspectRatio: AspectRatioPreset;
+  width: number;
+  height: number;
+  trendTitle?: string;
+}) {
+  postToPlugin({
+    type: "resize-generation-frame",
+    ...payload,
+  });
+}
+
+export function saveAspectRatioPreference(aspectRatio: AspectRatioPreset) {
+  postToPlugin({
+    type: "save-aspect-ratio",
+    aspectRatio,
+  });
+}
+
+export function loadAspectRatioPreference() {
+  postToPlugin({
+    type: "load-aspect-ratio",
   });
 }

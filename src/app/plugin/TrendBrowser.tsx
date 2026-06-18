@@ -1,5 +1,5 @@
 /**
- * Main plugin UI — trend grid (tap card to copy master prompt)
+ * Main plugin UI — trend grid (tap card to copy master prompt + prepare Make Image frame)
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -14,12 +14,24 @@ import {
 import { TrendCarouselCard } from "../components/TrendCarouselCard";
 import { PluginResizeHandles } from "../components/PluginResizeHandles";
 import { ThemeSelect } from "../components/ThemeSelect";
-import { clearTrendData, saveTrendData } from "./utils/figmaMessaging";
+import { AspectRatioSelect } from "../components/AspectRatioSelect";
+import {
+  clearTrendData,
+  prepareGenerationFrame,
+  resizeGenerationFrame,
+  saveAspectRatioPreference,
+  saveTrendData,
+} from "./utils/figmaMessaging";
 import {
   buildMasterPromptText,
   getStickerFormatFooterSuffix,
   type StickerFormat,
 } from "./utils/promptBuilder";
+import {
+  getDimensionsForPreset,
+  getEffectiveAspectRatio,
+  type AspectRatioPreset,
+} from "./utils/aspectRatioPresets";
 import { copyTextToClipboard } from "./utils/copyToClipboard";
 
 /** Set to true to restore TrendDetailPanel import + bottom variations section */
@@ -31,6 +43,9 @@ const STICKER_FORMAT_OPTIONS: { value: StickerFormat; label: string }[] = [
   { value: "sheet", label: "Sheet" },
 ];
 
+const MAKE_IMAGE_TOAST =
+  "Prompt copied — open Make an image and paste (⌘V)";
+
 export function TrendBrowser() {
   const {
     selectedNodes,
@@ -40,10 +55,14 @@ export function TrendBrowser() {
     setStickerFormat,
     selectedThemeId,
     setSelectedThemeId,
+    selectedAspectRatio,
+    setSelectedAspectRatio,
+    activeGenerationFrame,
   } = usePluginContext();
 
   const [selectedTrendId, setSelectedTrendId] = useState(1);
   const [copiedTrendId, setCopiedTrendId] = useState<number | null>(null);
+  const [lastTrendTitle, setLastTrendTitle] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const [isNarrow, setIsNarrow] = useState(false);
 
@@ -51,6 +70,11 @@ export function TrendBrowser() {
   const stickerFooterSuffix = getStickerFormatFooterSuffix(stickerFormat);
   const themeFooterSuffix = getThemeFooterSuffix(selectedThemeId, stickerFormat);
   const toastSuffix = formatPromptToastSuffix(stickerFormat, selectedThemeId);
+  const effectiveAspectRatio = getEffectiveAspectRatio(
+    stickerFormat,
+    selectedAspectRatio
+  );
+  const aspectRatioLocked = stickerFormat === "sheet";
 
   useEffect(() => {
     if (appliedTrendId) {
@@ -70,6 +94,18 @@ export function TrendBrowser() {
     observer.observe(root);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (stickerFormat !== "sheet") return;
+
+    const { width, height } = getDimensionsForPreset("16:9");
+    resizeGenerationFrame({
+      aspectRatio: "16:9",
+      width,
+      height,
+      trendTitle: lastTrendTitle ?? undefined,
+    });
+  }, [stickerFormat, lastTrendTitle]);
 
   const copyMasterForTrend = async (trend: Trend) => {
     const themeSubjectPrompt = resolveActiveThemeSubjectPrompt(
@@ -99,18 +135,32 @@ export function TrendBrowser() {
       );
     }
 
-    if (selectedNodes.length > 0) {
+    const { width, height } = getDimensionsForPreset(effectiveAspectRatio);
+    prepareGenerationFrame({
+      trendId: trend.id,
+      trendTitle: trend.title,
+      aspectRatio: effectiveAspectRatio,
+      width,
+      height,
+    });
+    setLastTrendTitle(trend.title);
+
+    if (copied) {
+      if (selectedNodes.length > 0) {
+        toast.success(
+          `${MAKE_IMAGE_TOAST} · Saved to ${selectedNodes.length} node${selectedNodes.length !== 1 ? "s" : ""}${toastSuffix}`
+        );
+      } else {
+        toast.success(
+          toastSuffix ? `${MAKE_IMAGE_TOAST}${toastSuffix}` : MAKE_IMAGE_TOAST
+        );
+      }
+    } else if (selectedNodes.length > 0) {
       toast.success(
-        copied
-          ? `Master prompt copied & saved to ${selectedNodes.length} node${selectedNodes.length !== 1 ? "s" : ""}${toastSuffix}`
-          : `Master prompt saved to ${selectedNodes.length} node${selectedNodes.length !== 1 ? "s" : ""}${toastSuffix} (clipboard unavailable)`
-      );
-    } else if (copied) {
-      toast.success(
-        toastSuffix ? `Master prompt copied!${toastSuffix}` : "Master prompt copied!"
+        `Generation frame ready · Saved to ${selectedNodes.length} node${selectedNodes.length !== 1 ? "s" : ""}${toastSuffix} (clipboard unavailable)`
       );
     } else {
-      toast.error("Failed to copy master prompt");
+      toast.error("Failed to copy prompt");
     }
 
     return copied;
@@ -125,6 +175,21 @@ export function TrendBrowser() {
     }
   };
 
+  const handleAspectRatioChange = (preset: AspectRatioPreset) => {
+    if (aspectRatioLocked) return;
+
+    setSelectedAspectRatio(preset);
+    saveAspectRatioPreference(preset);
+
+    const { width, height } = getDimensionsForPreset(preset);
+    resizeGenerationFrame({
+      aspectRatio: preset,
+      width,
+      height,
+      trendTitle: lastTrendTitle ?? undefined,
+    });
+  };
+
   const handleClearTrend = () => {
     if (selectedNodes.length === 0) return;
     const nodeIds = selectedNodes.map((n) => n.id);
@@ -133,11 +198,16 @@ export function TrendBrowser() {
     refreshSelection();
   };
 
+  const frameLabel = activeGenerationFrame
+    ? `Frame ${activeGenerationFrame.aspectRatio} (${activeGenerationFrame.width}×${activeGenerationFrame.height})`
+    : null;
+
   const selectionLabel =
     selectedNodes.length === 0
-      ? stickerFormat !== "off"
-        ? "No selection — sticker prompts copy to clipboard only"
-        : "No selection — prompts copy to clipboard only"
+      ? frameLabel ??
+        (stickerFormat !== "off"
+          ? "No selection — sticker prompts copy to clipboard only"
+          : "No selection — prompts copy to clipboard only")
       : selectedNodes.length === 1
         ? `1 node: "${selectedNodes[0].name || "Unnamed"}"${stickerFooterSuffix}${themeFooterSuffix}`
         : `${selectedNodes.length} nodes selected${stickerFooterSuffix}${themeFooterSuffix}`;
@@ -174,6 +244,12 @@ export function TrendBrowser() {
             stickerFormat={stickerFormat}
           />
         </div>
+
+        <AspectRatioSelect
+          value={effectiveAspectRatio}
+          onChange={handleAspectRatioChange}
+          disabled={aspectRatioLocked}
+        />
 
         <div className="figma-trend-grid flex-1 min-h-0">
           {trends.map((trend) => (

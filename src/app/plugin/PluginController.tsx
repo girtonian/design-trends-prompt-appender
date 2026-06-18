@@ -4,15 +4,31 @@
  */
 
 import { useState, useEffect, createContext, useContext } from "react";
-import { StoredTrendData } from "./utils/figmaMessaging";
-import { onPluginMessage, requestSelection, getTrendData, type FigmaNode } from "./utils/figmaMessaging";
+import {
+  StoredTrendData,
+  onPluginMessage,
+  requestSelection,
+  getTrendData,
+  type FigmaNode,
+} from "./utils/figmaMessaging";
 import {
   resolveStickerFormatFromLegacy,
   type StickerFormat,
 } from "./utils/promptBuilder";
 import type { ThemeId } from "../data/themes";
+import {
+  DEFAULT_ASPECT_RATIO,
+  type AspectRatioPreset,
+} from "./utils/aspectRatioPresets";
 import { TrendBrowser } from "./TrendBrowser";
 import { Toaster } from "../components/ui/sonner";
+
+export interface ActiveGenerationFrame {
+  frameId: string;
+  width: number;
+  height: number;
+  aspectRatio: AspectRatioPreset;
+}
 
 interface PluginContextState {
   selectedNodes: FigmaNode[];
@@ -22,6 +38,9 @@ interface PluginContextState {
   setStickerFormat: (format: StickerFormat) => void;
   selectedThemeId: ThemeId | null;
   setSelectedThemeId: (id: ThemeId | null) => void;
+  selectedAspectRatio: AspectRatioPreset;
+  setSelectedAspectRatio: (preset: AspectRatioPreset) => void;
+  activeGenerationFrame: ActiveGenerationFrame | null;
 }
 
 const PluginContext = createContext<PluginContextState | null>(null);
@@ -48,6 +67,10 @@ export function PluginController() {
   const [currentTrendData, setCurrentTrendData] = useState<StoredTrendData | null>(null);
   const [stickerFormat, setStickerFormat] = useState<StickerFormat>("off");
   const [selectedThemeId, setSelectedThemeId] = useState<ThemeId | null>(null);
+  const [selectedAspectRatio, setSelectedAspectRatio] =
+    useState<AspectRatioPreset>(DEFAULT_ASPECT_RATIO);
+  const [activeGenerationFrame, setActiveGenerationFrame] =
+    useState<ActiveGenerationFrame | null>(null);
 
   const refreshSelection = () => {
     requestSelection();
@@ -73,6 +96,19 @@ export function PluginController() {
         case "clear-success":
           refreshSelection();
           break;
+        case "aspect-ratio-preference":
+          if (message.aspectRatio) {
+            setSelectedAspectRatio(message.aspectRatio);
+          }
+          break;
+        case "generation-frame-ready":
+          setActiveGenerationFrame({
+            frameId: message.frameId,
+            width: message.width,
+            height: message.height,
+            aspectRatio: message.aspectRatio,
+          });
+          break;
         default:
           break;
       }
@@ -90,6 +126,9 @@ export function PluginController() {
     setStickerFormat,
     selectedThemeId,
     setSelectedThemeId,
+    selectedAspectRatio,
+    setSelectedAspectRatio,
+    activeGenerationFrame,
   };
 
   return (
