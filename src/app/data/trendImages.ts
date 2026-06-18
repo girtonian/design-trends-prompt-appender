@@ -7,7 +7,8 @@ import etherealBotanics from "../../assets/trends/ethereal-botanics.png";
 import fragmentedType from "../../assets/trends/fragmented-type.png";
 import xeroxPunk from "../../assets/trends/xerox-punk.png";
 import broadcastSignals from "../../assets/trends/broadcast-signals.png";
-import medievalFuturism from "../../assets/trends/medieval-futurism.png";
+// import medievalFuturism from "../../assets/trends/medieval-futurism.png";
+import ditheringAscii from "../../assets/trends/dithering-ascii.png";
 
 /** Bundled trend thumbnail URLs keyed by trend id */
 export const trendImageById: Record<number, string> = {
@@ -20,5 +21,5 @@ export const trendImageById: Record<number, string> = {
   7: fragmentedType,
   8: xeroxPunk,
   9: broadcastSignals,
-  10: medievalFuturism,
+  10: ditheringAscii,
 };

@@ -271,6 +271,7 @@ export const trends: Trend[] = [
       ]
     }
   },
+  /*
   {
     id: 10,
     title: "Medieval Futurism",
@@ -296,6 +297,35 @@ export const trends: Trend[] = [
         "digital manuscript border with shimmering glyphs --ar 4:5",
         "hybrid medieval-tech crest glowing with AI filigree --ar 3:4",
         "apocalyptic techno-ceremonial emblem --ar 3:4"
+      ]
+    }
+  },
+  */
+  {
+    id: 10,
+    title: "Dithering ASCII",
+    tagline: "When characters become texture.",
+    description: "A lo-fi digital aesthetic where forms are built from ASCII symbols, glyph clusters, and halftone dither patterns. Combines retro terminal art, dot-matrix imaging, and gritty monochrome poster design into high-contrast compositions with raw computational texture.",
+    keywords: ["ASCII", "Monochrome", "Dithered", "Retro", "Computational"],
+    mood: "Gritty, nostalgic, raw",
+    applications: ["Tech posters", "Editorial illustration", "Album art", "Digital zines"],
+    imageUrl: trendImageById[10],
+    color: "rgb(220, 220, 220)",
+    midjourneyPrompts: {
+      masterPrompt: "ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition",
+      aspectRatios: ["--ar 3:4", "--ar 1:1"],
+      negativePrompts: "color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering",
+      variations: [
+        "terminal ASCII portrait with dense glyph clusters --ar 3:4",
+        "dot-matrix halftone landscape, character-based shading --ar 4:5",
+        "monochrome dither poster with blocky bitmap forms --ar 1:1",
+        "retro CRT ASCII still life, layered noise texture --ar 3:4",
+        "lo-fi computational portrait, screenprint tonal breakup --ar 4:5",
+        "type-as-texture abstract composition, structured glyph noise --ar 1:1",
+        "early computer graphics scene, gritty bitmap detail --ar 3:4",
+        "ASCII symbol mosaic with halftone depth gradients --ar 4:5",
+        "terminal cyber poster, high-contrast dither gradients --ar 1:1",
+        "dot-matrix character shading study, raw digital texture --ar 3:4"
       ]
     }
   }

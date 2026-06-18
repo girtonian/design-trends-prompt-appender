@@ -12,7 +12,7 @@ export const themeTrendSubjects: Record<ThemeId, string[]> = {
     "chaotic FOOD letter collage",
     "xerox punk cafe flyer",
     "retro food broadcast UI",
-    "medieval brewery crest",
+    "ASCII coffee mug glyph portrait",
   ],
   "nature-weather": [
     "wobbly sun doodle",
@@ -24,7 +24,7 @@ export const themeTrendSubjects: Record<ThemeId, string[]> = {
     "chaotic WEATHER type collage",
     "xerox punk nature zine",
     "retro weather radar UI",
-    "medieval tree heraldry",
+    "dithered cloud ASCII landscape",
   ],
   animals: [
     "scribble pet portrait",
@@ -36,7 +36,7 @@ export const themeTrendSubjects: Record<ThemeId, string[]> = {
     "chaotic ANIMAL letter mashup",
     "xerox punk wildlife flyer",
     "retro animal channel bumper",
-    "medieval beast sigil",
+    "dot-matrix animal portrait",
   ],
   "architecture-places": [
     "childlike house doodle",
@@ -48,7 +48,7 @@ export const themeTrendSubjects: Record<ThemeId, string[]> = {
     "chaotic CITY letter poster",
     "xerox punk venue flyer",
     "retro map overlay UI",
-    "medieval fortress crest",
+    "bitmap city skyline ASCII",
   ],
   "transport-travel": [
     "crayon car doodle",
@@ -60,7 +60,7 @@ export const themeTrendSubjects: Record<ThemeId, string[]> = {
     "chaotic GO type travel poster",
     "xerox punk tour flyer",
     "retro departure board UI",
-    "medieval compass heraldry",
+    "terminal airplane glyph icon",
   ],
   "symbols-badges": [
     "hand-drawn star badge",
@@ -72,7 +72,7 @@ export const themeTrendSubjects: Record<ThemeId, string[]> = {
     "chaotic BADGE type layers",
     "xerox punk sticker sheet",
     "retro certification UI frame",
-    "medieval order insignia",
+    "ASCII crest badge dither",
   ],
   "patterns-tiles": [
     "crayon tile doodle grid",
@@ -84,7 +84,7 @@ export const themeTrendSubjects: Record<ThemeId, string[]> = {
     "chaotic PATTERN type grid",
     "xerox punk repeat flyer",
     "retro tile selector UI",
-    "medieval mosaic crest pattern",
+    "character-based dither tile repeat",
   ],
   "mascots-characters": [
     "childlike mascot doodle",
@@ -96,7 +96,7 @@ export const themeTrendSubjects: Record<ThemeId, string[]> = {
     "chaotic NAME type mascot poster",
     "xerox punk character zine",
     "retro mascot channel bumper",
-    "medieval knight mascot crest",
+    "lo-fi ASCII mascot portrait",
   ],
 };
 

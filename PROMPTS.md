@@ -36,7 +36,7 @@ See [`PROMPTS-flora-reference.csv`](PROMPTS-flora-reference.csv) for trend label
 | 07 | Fragmented Type | 10 |
 | 08 | Xerox Punk | 10 |
 | 09 | Broadcast Signals | 10 |
-| 10 | Medieval Futurism | 10 |
+| 10 | Dithering ASCII | 10 |
 
 ---
 
@@ -1498,23 +1498,23 @@ MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3
 
 ---
 
-## 10 — Medieval Futurism
+## 10 — Dithering ASCII
 
-*When castles meet circuits.*
+*When characters become texture.*
 
-**Keywords:** Hybrid, Ornate, Futuristic, Historical, Paradoxical
+**Keywords:** ASCII, Monochrome, Dithered, Retro, Computational
 
-**Mood:** Epic, mysterious, timeless
+**Mood:** Gritty, nostalgic, raw
 
 ### Master prompt
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition
 ```
 
-**Negative guidance:** pure medieval realism, soft fantasy
+**Negative guidance:** color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering
 
-**Default aspect ratios:** --ar 3:4
+**Default aspect ratios:** --ar 3:4, --ar 1:1
 
 ### Variations
 
@@ -1523,13 +1523,13 @@ future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscr
 **Weave-ready prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, electric rune symbols mixed with blackletter tech calligraphy. Avoid: pure medieval realism, soft fantasy.
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, terminal ASCII portrait with dense glyph clusters. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 ```
 
 **Midjourney full prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, electric rune symbols mixed with blackletter tech calligraphy --ar 3:4 --no pure medieval realism, soft fantasy
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, terminal ASCII portrait with dense glyph clusters --ar 3:4 --no color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering
 ```
 
 #### 10.02 — Variation 02
@@ -1537,13 +1537,13 @@ future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscr
 **Weave-ready prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, sci-fi illuminated manuscript with neon circuitry. Avoid: pure medieval realism, soft fantasy.
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, dot-matrix halftone landscape, character-based shading. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 ```
 
 **Midjourney full prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, sci-fi illuminated manuscript with neon circuitry --ar 4:5 --no pure medieval realism, soft fantasy
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, dot-matrix halftone landscape, character-based shading --ar 4:5 --no color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering
 ```
 
 #### 10.03 — Variation 03
@@ -1551,13 +1551,13 @@ future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscr
 **Weave-ready prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, cyber-gothic heraldry crest, ritual symmetry. Avoid: pure medieval realism, soft fantasy.
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, monochrome dither poster with blocky bitmap forms. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 ```
 
 **Midjourney full prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, cyber-gothic heraldry crest, ritual symmetry --ar 3:4 --no pure medieval realism, soft fantasy
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, monochrome dither poster with blocky bitmap forms --ar 1:1 --no color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering
 ```
 
 #### 10.04 — Variation 04
@@ -1565,13 +1565,13 @@ future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscr
 **Weave-ready prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, digital relics with glowing rune patterns. Avoid: pure medieval realism, soft fantasy.
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, retro CRT ASCII still life, layered noise texture. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 ```
 
 **Midjourney full prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, digital relics with glowing rune patterns --ar 1:1 --no pure medieval realism, soft fantasy
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, retro CRT ASCII still life, layered noise texture --ar 3:4 --no color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering
 ```
 
 #### 10.05 — Variation 05
@@ -1579,13 +1579,13 @@ future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscr
 **Weave-ready prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, techno-knight insignia with glitch parchment. Avoid: pure medieval realism, soft fantasy.
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, lo-fi computational portrait, screenprint tonal breakup. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 ```
 
 **Midjourney full prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, techno-knight insignia with glitch parchment --ar 4:5 --no pure medieval realism, soft fantasy
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, lo-fi computational portrait, screenprint tonal breakup --ar 4:5 --no color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering
 ```
 
 #### 10.06 — Variation 06
@@ -1593,13 +1593,13 @@ future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscr
 **Weave-ready prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, sacred futuristic sigil carved in luminous metal. Avoid: pure medieval realism, soft fantasy.
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, type-as-texture abstract composition, structured glyph noise. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 ```
 
 **Midjourney full prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, sacred futuristic sigil carved in luminous metal --ar 3:4 --no pure medieval realism, soft fantasy
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, type-as-texture abstract composition, structured glyph noise --ar 1:1 --no color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering
 ```
 
 #### 10.07 — Variation 07
@@ -1607,13 +1607,13 @@ future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscr
 **Weave-ready prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, mythic beast outline enhanced with circuitry. Avoid: pure medieval realism, soft fantasy.
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, early computer graphics scene, gritty bitmap detail. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 ```
 
 **Midjourney full prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, mythic beast outline enhanced with circuitry --ar 1:1 --no pure medieval realism, soft fantasy
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, early computer graphics scene, gritty bitmap detail --ar 3:4 --no color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering
 ```
 
 #### 10.08 — Variation 08
@@ -1621,13 +1621,13 @@ future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscr
 **Weave-ready prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, digital manuscript border with shimmering glyphs. Avoid: pure medieval realism, soft fantasy.
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, ASCII symbol mosaic with halftone depth gradients. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 ```
 
 **Midjourney full prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, digital manuscript border with shimmering glyphs --ar 4:5 --no pure medieval realism, soft fantasy
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, ASCII symbol mosaic with halftone depth gradients --ar 4:5 --no color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering
 ```
 
 #### 10.09 — Variation 09
@@ -1635,13 +1635,13 @@ future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscr
 **Weave-ready prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, hybrid medieval-tech crest glowing with AI filigree. Avoid: pure medieval realism, soft fantasy.
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, terminal cyber poster, high-contrast dither gradients. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 ```
 
 **Midjourney full prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, hybrid medieval-tech crest glowing with AI filigree --ar 3:4 --no pure medieval realism, soft fantasy
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, terminal cyber poster, high-contrast dither gradients --ar 1:1 --no color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering
 ```
 
 #### 10.10 — Variation 10
@@ -1649,13 +1649,13 @@ future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscr
 **Weave-ready prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, apocalyptic techno-ceremonial emblem. Avoid: pure medieval realism, soft fantasy.
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, dot-matrix character shading study, raw digital texture. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 ```
 
 **Midjourney full prompt**
 
 ```
-future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, apocalyptic techno-ceremonial emblem --ar 3:4 --no pure medieval realism, soft fantasy
+ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, dot-matrix character shading study, raw digital texture --ar 3:4 --no color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering
 ```
 
 ---
@@ -1842,22 +1842,22 @@ future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscr
 
 90. MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, retro futuristic broadcast energy storm. Avoid: muted colors, minimal layout.
 
-91. future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, electric rune symbols mixed with blackletter tech calligraphy. Avoid: pure medieval realism, soft fantasy.
+91. ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, terminal ASCII portrait with dense glyph clusters. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 
-92. future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, sci-fi illuminated manuscript with neon circuitry. Avoid: pure medieval realism, soft fantasy.
+92. ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, dot-matrix halftone landscape, character-based shading. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 
-93. future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, cyber-gothic heraldry crest, ritual symmetry. Avoid: pure medieval realism, soft fantasy.
+93. ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, monochrome dither poster with blocky bitmap forms. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 
-94. future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, digital relics with glowing rune patterns. Avoid: pure medieval realism, soft fantasy.
+94. ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, retro CRT ASCII still life, layered noise texture. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 
-95. future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, techno-knight insignia with glitch parchment. Avoid: pure medieval realism, soft fantasy.
+95. ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, lo-fi computational portrait, screenprint tonal breakup. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 
-96. future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, sacred futuristic sigil carved in luminous metal. Avoid: pure medieval realism, soft fantasy.
+96. ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, type-as-texture abstract composition, structured glyph noise. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 
-97. future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, mythic beast outline enhanced with circuitry. Avoid: pure medieval realism, soft fantasy.
+97. ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, early computer graphics scene, gritty bitmap detail. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 
-98. future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, digital manuscript border with shimmering glyphs. Avoid: pure medieval realism, soft fantasy.
+98. ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, ASCII symbol mosaic with halftone depth gradients. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 
-99. future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, hybrid medieval-tech crest glowing with AI filigree. Avoid: pure medieval realism, soft fantasy.
+99. ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, terminal cyber poster, high-contrast dither gradients. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 
-100. future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition, apocalyptic techno-ceremonial emblem. Avoid: pure medieval realism, soft fantasy.
+100. ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, dot-matrix character shading study, raw digital texture. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
