@@ -78,6 +78,9 @@ All 100 variation prompts plus 10 master prompts are exported in [`PROMPTS.md`](
 |------|-----|
 | [`PROMPTS-flora-batch.csv`](PROMPTS-flora-batch.csv) | **Upload to FLORA Batch Node** — no header, prompt in column 1 (100 rows) |
 | [`PROMPTS-flora-reference.csv`](PROMPTS-flora-reference.csv) | Spreadsheet reference with trend ID, title, and variation number |
+| [`PROMPTS-weave-master-batch.csv`](PROMPTS-weave-master-batch.csv) | **Upload to Batch / Array node** — all 8 sticker themes × 10 trends, full design trend prompts + 1920×1080 sticker sheet layout (80 rows, no header) |
+| [`PROMPTS-weave-master-reference.csv`](PROMPTS-weave-master-reference.csv) | Sticker batch reference with theme, trend, and explicit 1920×1080 dimensions |
+| [`PROMPTS-weave-arrays.md`](PROMPTS-weave-arrays.md) | Theme × trend sticker sheet prompts (per-theme arrays + master batch docs) |
 | [`PROMPTS.md`](PROMPTS.md) | Full prompt library with Weave-ready and Midjourney formats |
 
 **FLORA Batch Node:** drag `PROMPTS-flora-batch.csv` onto a text Batch Node. FLORA reads only the first column and does not skip headers, so the batch file intentionally has no header row. [FLORA Batch Node docs](https://docs.flora.ai/nodes/batch-node)

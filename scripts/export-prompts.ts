@@ -11,9 +11,20 @@ import { promptThemes, type ThemeId } from "../src/app/data/themes.ts";
 import { getThemeTrendSubject } from "../src/app/data/themeSubjects.ts";
 import {
   buildFullPrompt,
+  buildStickerSheetBatchPrompt,
   buildWeaveThemePrompt,
   cleanVariation,
+  STICKER_SHEET_ASPECT_RATIO,
 } from "../src/app/plugin/utils/promptBuilder.ts";
+import {
+  STICKER_SHEET_HEIGHT,
+  STICKER_SHEET_WIDTH,
+} from "../src/app/plugin/utils/stickerSheetLayout.ts";
+
+const STICKER_SHEET_ASPECT_RATIO_LABEL = STICKER_SHEET_ASPECT_RATIO.replace(
+  "--ar ",
+  ""
+);
 
 const rootDir = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(rootDir, "..");
@@ -210,6 +221,7 @@ interface ThemeArrayRow {
   trendId: number;
   trendTitle: string;
   prompt: string;
+  masterBatchPrompt: string;
 }
 
 const themeArrayRows: ThemeArrayRow[] = [];
@@ -233,6 +245,13 @@ for (const theme of promptThemes) {
           stickerFormat: "sheet",
           themeSubjectPrompt: theme.subjectPrompt,
         }
+      ),
+      masterBatchPrompt: buildStickerSheetBatchPrompt(
+        masterPrompt,
+        variation,
+        negativePrompts,
+        subject,
+        theme.subjectPrompt
       ),
     });
   });
@@ -279,6 +298,22 @@ const weaveArrayMd: string[] = [
   "Negatives use `No` instead of `Avoid:` to save tokens.",
   "",
   "Or upload `PROMPTS-weave-arrays.csv` — filter by `theme_id` for a single theme batch.",
+  "",
+  "## Master sticker batch (all themes × all trends)",
+  "",
+  "**80 prompts** — every sticker theme paired with every design trend (8 × 10).",
+  "Each prompt uses the **1920×1080** sticker sheet layout (6×3 grid, 18 die-cut stickers).",
+  "Master batch prompts include the **full design trend master prompt**, variation hook, theme constraint, and sticker sheet layout (not the compact 3-anchor Weave version).",
+  "",
+  "| File | Use |",
+  "|------|-----|",
+  "| [`PROMPTS-weave-master-batch.csv`](PROMPTS-weave-master-batch.csv) | **Upload to a Batch / Array node** — no header, prompt in column 1 (80 rows) |",
+  "| [`PROMPTS-weave-master-reference.csv`](PROMPTS-weave-master-reference.csv) | Spreadsheet reference with theme, trend, and explicit 1920×1080 dimensions |",
+  "",
+  "1. Upload `PROMPTS-weave-master-batch.csv` to a text Batch Node, Array, or List node.",
+  "2. Connect to your image model and set output size to **1920 × 1080** (16:9) if the platform exposes size separately.",
+  "3. Run once to generate all 80 sticker sheets.",
+  "4. Use the reference CSV to filter or sort by `theme_id` or `trend_id`.",
   "",
   "---",
   "",
@@ -346,12 +381,61 @@ for (const theme of promptThemes) {
   );
 }
 
+// Master sticker batch CSV (upload-ready: no header, all 80 theme×trend prompts)
+const weaveMasterBatchCsv = themeArrayRows
+  .map((row) => csvCell(row.masterBatchPrompt))
+  .join("\n");
+
+writeFileSync(
+  join(projectRoot, "PROMPTS-weave-master-batch.csv"),
+  weaveMasterBatchCsv + "\n",
+  "utf-8"
+);
+
+// Master sticker reference CSV (with headers — do NOT upload to Batch Node)
+const weaveMasterReferenceCsv = [
+  [
+    "prompt",
+    "theme_id",
+    "theme_label",
+    "trend_id",
+    "trend_title",
+    "width",
+    "height",
+    "aspect_ratio",
+  ].join(","),
+  ...themeArrayRows.map((row) =>
+    [
+      csvCell(row.masterBatchPrompt),
+      row.themeId,
+      csvCell(row.themeLabel),
+      row.trendId,
+      csvCell(row.trendTitle),
+      STICKER_SHEET_WIDTH,
+      STICKER_SHEET_HEIGHT,
+      STICKER_SHEET_ASPECT_RATIO_LABEL,
+    ].join(",")
+  ),
+].join("\n");
+
+writeFileSync(
+  join(projectRoot, "PROMPTS-weave-master-reference.csv"),
+  weaveMasterReferenceCsv + "\n",
+  "utf-8"
+);
+
 console.log(`Wrote PROMPTS.md (${promptRows.length} variation prompts)`);
 console.log(`Wrote PROMPTS-flora-batch.csv (${promptRows.length} rows, no header — upload to FLORA Batch Node)`);
 console.log(`Wrote PROMPTS-flora-reference.csv (${promptRows.length} rows with metadata)`);
 console.log(`Wrote PROMPTS-weave-arrays.json (${themeArrayRows.length} theme×trend prompts)`);
 console.log(`Wrote PROMPTS-weave-arrays.md`);
 console.log(`Wrote PROMPTS-weave-arrays.csv`);
+console.log(
+  `Wrote PROMPTS-weave-master-batch.csv (${themeArrayRows.length} rows, no header — upload to Batch Node)`
+);
+console.log(
+  `Wrote PROMPTS-weave-master-reference.csv (${themeArrayRows.length} rows with metadata)`
+);
 for (const theme of promptThemes) {
   console.log(`Wrote PROMPTS-weave-${theme.id}.csv (10 prompts)`);
 }

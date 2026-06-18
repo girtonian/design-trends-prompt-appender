@@ -134,6 +134,32 @@ export function buildWeaveThemePrompt(
 }
 
 /**
+ * Full sticker-sheet batch prompt: subject + complete master prompt + variation hook +
+ * theme constraint + sticker sheet layout + negatives. Used for master batch CSV exports
+ * where the full design trend style must be preserved (not token-truncated).
+ */
+export function buildStickerSheetBatchPrompt(
+  masterPrompt: string,
+  variation: string,
+  negativePrompts: string,
+  subject: string,
+  themeSubjectPrompt?: string | null
+): string {
+  const hook = cleanVariation(variation)
+    .replace(/--style \S+/g, "")
+    .trim();
+  const positiveParts = [subject, masterPrompt, hook];
+
+  if (themeSubjectPrompt) {
+    positiveParts.push(themeSubjectPrompt);
+  }
+  positiveParts.push(STICKER_SHEET_SUFFIX);
+
+  const mergedNegatives = `${negativePrompts}, ${STICKER_SHEET_NEGATIVE_ADDITIONS}`;
+  return `${positiveParts.join(", ")}. No ${mergedNegatives}`;
+}
+
+/**
  * Appends sticker-format parameters to a master prompt (no variation or --no clause).
  */
 export function applyStickerToMasterPrompt(

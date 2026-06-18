@@ -1347,7 +1347,7 @@ grunge zine collage, xerox textures, torn edges, graffiti scribbles, ransom-note
 ### Master prompt
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism
 ```
 
 **Negative guidance:** muted colors, minimal layout
@@ -1361,13 +1361,13 @@ MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3
 **Weave-ready prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, 90s broadcast chaos with neon scribbles. Avoid: muted colors, minimal layout.
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, 90s broadcast chaos with neon scribbles. Avoid: muted colors, minimal layout.
 ```
 
 **Midjourney full prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, 90s broadcast chaos with neon scribbles --ar 16:9 --no muted colors, minimal layout
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, 90s broadcast chaos with neon scribbles --ar 16:9 --no muted colors, minimal layout
 ```
 
 #### 09.02 — Variation 02
@@ -1375,13 +1375,13 @@ MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3
 **Weave-ready prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, cartoon doodles + fake 3D shapes exploding with color. Avoid: muted colors, minimal layout.
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, cartoon doodles + fake 3D shapes exploding with color. Avoid: muted colors, minimal layout.
 ```
 
 **Midjourney full prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, cartoon doodles + fake 3D shapes exploding with color --ar 3:2 --no muted colors, minimal layout
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, cartoon doodles + fake 3D shapes exploding with color --ar 3:2 --no muted colors, minimal layout
 ```
 
 #### 09.03 — Variation 03
@@ -1389,13 +1389,13 @@ MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3
 **Weave-ready prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, weird retro UI overlays with motion-style distortion. Avoid: muted colors, minimal layout.
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, weird retro UI overlays with motion-style distortion. Avoid: muted colors, minimal layout.
 ```
 
 **Midjourney full prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, weird retro UI overlays with motion-style distortion --ar 16:9 --no muted colors, minimal layout
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, weird retro UI overlays with motion-style distortion --ar 16:9 --no muted colors, minimal layout
 ```
 
 #### 09.04 — Variation 04
@@ -1403,13 +1403,13 @@ MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3
 **Weave-ready prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, hyper-neon surreal channel-surf aesthetic. Avoid: muted colors, minimal layout.
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, hyper-neon surreal channel-surf aesthetic. Avoid: muted colors, minimal layout.
 ```
 
 **Midjourney full prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, hyper-neon surreal channel-surf aesthetic --ar 16:9 --no muted colors, minimal layout
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, hyper-neon surreal channel-surf aesthetic --ar 16:9 --no muted colors, minimal layout
 ```
 
 #### 09.05 — Variation 05
@@ -1417,13 +1417,13 @@ MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3
 **Weave-ready prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, glitchy shapes and cartoon icons colliding. Avoid: muted colors, minimal layout.
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, glitchy shapes and cartoon icons colliding. Avoid: muted colors, minimal layout.
 ```
 
 **Midjourney full prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, glitchy shapes and cartoon icons colliding --ar 3:2 --no muted colors, minimal layout
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, glitchy shapes and cartoon icons colliding --ar 3:2 --no muted colors, minimal layout
 ```
 
 #### 09.06 — Variation 06
@@ -1431,13 +1431,13 @@ MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3
 **Weave-ready prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, electric pop-art with exaggerated movement. Avoid: muted colors, minimal layout.
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, electric pop-art with exaggerated movement. Avoid: muted colors, minimal layout.
 ```
 
 **Midjourney full prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, electric pop-art with exaggerated movement --ar 16:9 --no muted colors, minimal layout
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, electric pop-art with exaggerated movement --ar 16:9 --no muted colors, minimal layout
 ```
 
 #### 09.07 — Variation 07
@@ -1445,13 +1445,13 @@ MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3
 **Weave-ready prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, early-CG chrome blobs and flat cartoons together. Avoid: muted colors, minimal layout.
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, early-CG chrome blobs and flat cartoons together. Avoid: muted colors, minimal layout.
 ```
 
 **Midjourney full prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, early-CG chrome blobs and flat cartoons together --ar 16:9 --no muted colors, minimal layout
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, early-CG chrome blobs and flat cartoons together --ar 16:9 --no muted colors, minimal layout
 ```
 
 #### 09.08 — Variation 08
@@ -1459,13 +1459,13 @@ MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3
 **Weave-ready prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, psychedelic 90s tv-bumper vibes. Avoid: muted colors, minimal layout.
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, psychedelic 90s tv-bumper vibes. Avoid: muted colors, minimal layout.
 ```
 
 **Midjourney full prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, psychedelic 90s tv-bumper vibes --ar 3:2 --no muted colors, minimal layout
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, psychedelic 90s tv-bumper vibes --ar 3:2 --no muted colors, minimal layout
 ```
 
 #### 09.09 — Variation 09
@@ -1473,13 +1473,13 @@ MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3
 **Weave-ready prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, chaotic colorful doodles layered over motion blur. Avoid: muted colors, minimal layout.
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, chaotic colorful doodles layered over motion blur. Avoid: muted colors, minimal layout.
 ```
 
 **Midjourney full prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, chaotic colorful doodles layered over motion blur --ar 16:9 --no muted colors, minimal layout
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, chaotic colorful doodles layered over motion blur --ar 16:9 --no muted colors, minimal layout
 ```
 
 #### 09.10 — Variation 10
@@ -1487,13 +1487,13 @@ MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3
 **Weave-ready prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, retro futuristic broadcast energy storm. Avoid: muted colors, minimal layout.
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, retro futuristic broadcast energy storm. Avoid: muted colors, minimal layout.
 ```
 
 **Midjourney full prompt**
 
 ```
-MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, retro futuristic broadcast energy storm --ar 16:9 --no muted colors, minimal layout
+broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, retro futuristic broadcast energy storm --ar 16:9 --no muted colors, minimal layout
 ```
 
 ---
@@ -1822,25 +1822,25 @@ ASCII dithering art style, monochrome digital image built from dense text charac
 
 80. grunge zine collage, xerox textures, torn edges, graffiti scribbles, ransom-note letters, gritty halftone patterns, 90s underground aesthetic, torn magazine fragments fused with graffiti. Avoid: clean edges, polished type, corporate design.
 
-81. MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, 90s broadcast chaos with neon scribbles. Avoid: muted colors, minimal layout.
+81. broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, 90s broadcast chaos with neon scribbles. Avoid: muted colors, minimal layout.
 
-82. MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, cartoon doodles + fake 3D shapes exploding with color. Avoid: muted colors, minimal layout.
+82. broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, cartoon doodles + fake 3D shapes exploding with color. Avoid: muted colors, minimal layout.
 
-83. MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, weird retro UI overlays with motion-style distortion. Avoid: muted colors, minimal layout.
+83. broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, weird retro UI overlays with motion-style distortion. Avoid: muted colors, minimal layout.
 
-84. MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, hyper-neon surreal channel-surf aesthetic. Avoid: muted colors, minimal layout.
+84. broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, hyper-neon surreal channel-surf aesthetic. Avoid: muted colors, minimal layout.
 
-85. MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, glitchy shapes and cartoon icons colliding. Avoid: muted colors, minimal layout.
+85. broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, glitchy shapes and cartoon icons colliding. Avoid: muted colors, minimal layout.
 
-86. MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, electric pop-art with exaggerated movement. Avoid: muted colors, minimal layout.
+86. broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, electric pop-art with exaggerated movement. Avoid: muted colors, minimal layout.
 
-87. MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, early-CG chrome blobs and flat cartoons together. Avoid: muted colors, minimal layout.
+87. broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, early-CG chrome blobs and flat cartoons together. Avoid: muted colors, minimal layout.
 
-88. MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, psychedelic 90s tv-bumper vibes. Avoid: muted colors, minimal layout.
+88. broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, psychedelic 90s tv-bumper vibes. Avoid: muted colors, minimal layout.
 
-89. MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, chaotic colorful doodles layered over motion blur. Avoid: muted colors, minimal layout.
+89. broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, chaotic colorful doodles layered over motion blur. Avoid: muted colors, minimal layout.
 
-90. MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, retro futuristic broadcast energy storm. Avoid: muted colors, minimal layout.
+90. broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism, retro futuristic broadcast energy storm. Avoid: muted colors, minimal layout.
 
 91. ASCII dithering art style, monochrome digital image built from dense text characters and halftone pixel shading, retro terminal aesthetics, black-and-white bitmap rendering, visible ASCII symbols and glyph clusters, character-based texture, layered dither patterns for shading and depth, high contrast gritty low-resolution look, screenprint tonal breakup, raw computational texture, early computer graphics feel, retro cyber-visual language, deliberately limited palette, structured noise, crisp composition, terminal ASCII portrait with dense glyph clusters. Avoid: color photography, smooth gradients, photorealistic detail, clean vector lines, glossy rendering.
 

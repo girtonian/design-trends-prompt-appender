@@ -254,7 +254,7 @@ export const trends: Trend[] = [
     imageUrl: trendImageById[9],
     color: "rgb(230, 245, 255)",
     midjourneyPrompts: {
-      masterPrompt: "MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism",
+      masterPrompt: "broadcast signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism",
       aspectRatios: ["--ar 16:9"],
       negativePrompts: "muted colors, minimal layout",
       variations: [
