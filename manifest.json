@@ -5,12 +5,13 @@
   "main": "dist/code.js",
   "ui": "dist/index.html",
   "editorType": ["figma"],
-  "networkAccess": {
-    "allowedDomains": [
-      "https://images.unsplash.com"
-    ],
-    "reasoning": "Plugin displays curated design trend imagery from Unsplash to help users visualize aesthetic styles"
-  },
   "capabilities": [],
-  "permissions": []
+  "permissions": [],
+  "relaunchButtons": [
+    {
+      "command": "open",
+      "name": "Design Trends",
+      "multipleSelection": true
+    }
+  ]
 }

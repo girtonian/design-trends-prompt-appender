@@ -7,8 +7,11 @@ import { writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { trends } from "../src/app/data/trends.ts";
+import { promptThemes, type ThemeId } from "../src/app/data/themes.ts";
+import { getThemeTrendSubject } from "../src/app/data/themeSubjects.ts";
 import {
   buildFullPrompt,
+  buildWeaveThemePrompt,
   cleanVariation,
 } from "../src/app/plugin/utils/promptBuilder.ts";
 
@@ -199,6 +202,156 @@ writeFileSync(
   "utf-8"
 );
 
+// --- Figma Weave Array exports (8 themes × 10 trends) ---
+
+interface ThemeArrayRow {
+  themeId: ThemeId;
+  themeLabel: string;
+  trendId: number;
+  trendTitle: string;
+  prompt: string;
+}
+
+const themeArrayRows: ThemeArrayRow[] = [];
+
+for (const theme of promptThemes) {
+  trends.forEach((trend, trendIndex) => {
+    const { masterPrompt, negativePrompts, variations } = trend.midjourneyPrompts;
+    const variation = variations[trendIndex] ?? variations[0];
+    const subject = getThemeTrendSubject(theme.id, trendIndex);
+    themeArrayRows.push({
+      themeId: theme.id,
+      themeLabel: theme.label,
+      trendId: trend.id,
+      trendTitle: trend.title,
+      prompt: buildWeaveThemePrompt(
+        masterPrompt,
+        variation,
+        negativePrompts,
+        subject,
+        {
+          stickerFormat: "sheet",
+          themeSubjectPrompt: theme.subjectPrompt,
+        }
+      ),
+    });
+  });
+}
+
+const weaveArrayJson = Object.fromEntries(
+  promptThemes.map((theme) => [
+    theme.id,
+    {
+      label: theme.label,
+      prompts: themeArrayRows
+        .filter((row) => row.themeId === theme.id)
+        .map((row) => ({
+          trendId: row.trendId,
+          trendTitle: row.trendTitle,
+          prompt: row.prompt,
+        })),
+    },
+  ])
+);
+
+writeFileSync(
+  join(projectRoot, "PROMPTS-weave-arrays.json"),
+  JSON.stringify(weaveArrayJson, null, 2) + "\n",
+  "utf-8"
+);
+
+const weaveArrayMd: string[] = [
+  "# Figma Weave Array — Theme × Design Trend Prompts",
+  "",
+  "Eight arrays (one per theme), each with **10 prompts** — one per design trend.",
+  "Every prompt includes the **sticker sheet** layout suffix and matching negative guidance.",
+  "Prompts are compact to maximize Weave output and reduce credit usage.",
+  "",
+  "## How to use with Figma Weave",
+  "",
+  "1. Add an **Array** node and a **Text Iterator** (or **List**) node.",
+  "2. Paste the 10 prompts from a theme section below into the Array items.",
+  "3. Connect Array → Text Iterator → your image model.",
+  "4. Run once to batch-generate all 10 trend styles for that theme.",
+  "",
+  "**Credit tips:** Each prompt leads with a concrete subject, uses one variation hook,",
+  "and only 3 style anchors from the master prompt (not the full master + variation stack).",
+  "Negatives use `No` instead of `Avoid:` to save tokens.",
+  "",
+  "Or upload `PROMPTS-weave-arrays.csv` — filter by `theme_id` for a single theme batch.",
+  "",
+  "---",
+  "",
+];
+
+for (const theme of promptThemes) {
+  const rows = themeArrayRows.filter((row) => row.themeId === theme.id);
+  weaveArrayMd.push(`## ${theme.label} (\`${theme.id}\`)`);
+  weaveArrayMd.push("");
+  weaveArrayMd.push("```json");
+  weaveArrayMd.push(
+    JSON.stringify(
+      rows.map((row) => row.prompt),
+      null,
+      2
+    )
+  );
+  weaveArrayMd.push("```");
+  weaveArrayMd.push("");
+  weaveArrayMd.push("| # | Trend | Prompt |");
+  weaveArrayMd.push("|---|-------|--------|");
+  rows.forEach((row) => {
+    weaveArrayMd.push(
+      `| ${String(row.trendId).padStart(2, "0")} | ${row.trendTitle} | ${row.prompt.replace(/\|/g, "\\|")} |`
+    );
+  });
+  weaveArrayMd.push("");
+  weaveArrayMd.push("---");
+  weaveArrayMd.push("");
+}
+
+writeFileSync(
+  join(projectRoot, "PROMPTS-weave-arrays.md"),
+  weaveArrayMd.join("\n"),
+  "utf-8"
+);
+
+const weaveArrayCsv = [
+  ["prompt", "theme_id", "theme_label", "trend_id", "trend_title"].join(","),
+  ...themeArrayRows.map((row) =>
+    [
+      csvCell(row.prompt),
+      row.themeId,
+      csvCell(row.themeLabel),
+      row.trendId,
+      csvCell(row.trendTitle),
+    ].join(",")
+  ),
+].join("\n");
+
+writeFileSync(
+  join(projectRoot, "PROMPTS-weave-arrays.csv"),
+  weaveArrayCsv + "\n",
+  "utf-8"
+);
+
+// Per-theme batch CSVs (no header — paste or upload one file per theme)
+for (const theme of promptThemes) {
+  const rows = themeArrayRows.filter((row) => row.themeId === theme.id);
+  const themeCsv = rows.map((row) => csvCell(row.prompt)).join("\n");
+  writeFileSync(
+    join(projectRoot, `PROMPTS-weave-${theme.id}.csv`),
+    themeCsv + "\n",
+    "utf-8"
+  );
+}
+
 console.log(`Wrote PROMPTS.md (${promptRows.length} variation prompts)`);
 console.log(`Wrote PROMPTS-flora-batch.csv (${promptRows.length} rows, no header — upload to FLORA Batch Node)`);
 console.log(`Wrote PROMPTS-flora-reference.csv (${promptRows.length} rows with metadata)`);
+console.log(`Wrote PROMPTS-weave-arrays.json (${themeArrayRows.length} theme×trend prompts)`);
+console.log(`Wrote PROMPTS-weave-arrays.md`);
+console.log(`Wrote PROMPTS-weave-arrays.csv`);
+for (const theme of promptThemes) {
+  console.log(`Wrote PROMPTS-weave-${theme.id}.csv (10 prompts)`);
+}

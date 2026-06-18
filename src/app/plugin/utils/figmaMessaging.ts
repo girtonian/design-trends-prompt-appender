@@ -105,3 +105,14 @@ export function clearTrendData(nodeIds: string[]) {
     nodeIds,
   });
 }
+
+/**
+ * Resize the plugin UI window (handled in sandbox via figma.ui.resize)
+ */
+export function resizePluginUI(width: number, height: number) {
+  postToPlugin({
+    type: "resize-ui",
+    width,
+    height,
+  });
+}

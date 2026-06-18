@@ -62,8 +62,6 @@ export function PluginController() {
             getTrendData(message.selection[0].id);
           } else {
             setCurrentTrendData(null);
-            setStickerFormat("off");
-            setSelectedThemeId(null);
           }
           break;
         case "trend-data":

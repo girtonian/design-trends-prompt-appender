@@ -76,6 +76,56 @@ export function cleanVariation(variation: string): string {
 }
 
 /**
+ * First 3 comma-separated style anchors from a master prompt (token-efficient).
+ */
+export function extractStyleAnchor(masterPrompt: string): string {
+  return masterPrompt
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .slice(0, 3)
+    .join(", ");
+}
+
+/**
+ * Compact Figma Weave prompt: subject + variation hook + short style anchor + sticker sheet + negatives.
+ * Omits Midjourney flags and avoids repeating the full master prompt to save credits.
+ */
+export interface BuildWeaveThemePromptOptions {
+  stickerFormat?: Extract<StickerFormat, "off" | "sheet">;
+  themeSubjectPrompt?: string | null;
+}
+
+export function buildWeaveThemePrompt(
+  masterPrompt: string,
+  variation: string,
+  negativePrompts: string,
+  subject: string,
+  options: BuildWeaveThemePromptOptions = { stickerFormat: "sheet" }
+): string {
+  const { stickerFormat = "sheet", themeSubjectPrompt = null } = options;
+  const hook = cleanVariation(variation)
+    .replace(/--style \S+/g, "")
+    .trim();
+  const styleAnchor = extractStyleAnchor(masterPrompt);
+  const positiveParts = [subject, hook, styleAnchor];
+
+  if (themeSubjectPrompt) {
+    positiveParts.push(themeSubjectPrompt);
+  }
+  if (stickerFormat === "sheet") {
+    positiveParts.push(STICKER_SHEET_SUFFIX);
+  }
+
+  const mergedNegatives =
+    stickerFormat === "sheet"
+      ? `${negativePrompts}, ${STICKER_SHEET_NEGATIVE_ADDITIONS}`
+      : negativePrompts;
+
+  return `${positiveParts.join(", ")}. No ${mergedNegatives}`;
+}
+
+/**
  * Appends sticker-format parameters to a master prompt (no variation or --no clause).
  */
 export function applyStickerToMasterPrompt(
@@ -91,6 +141,24 @@ export function applyStickerToMasterPrompt(
     stickerFormat === "sheet" ? STICKER_SHEET_SUFFIX : STICKER_SINGLE_SUFFIX
   );
   return parts.join(", ");
+}
+
+/**
+ * Master prompt for clipboard copy (sticker/theme modifiers when active).
+ */
+export function buildMasterPromptText(
+  masterPrompt: string,
+  stickerFormat: StickerFormat,
+  themeSubjectPrompt?: string | null
+): string {
+  if (stickerFormat === "off") {
+    return masterPrompt;
+  }
+  return applyStickerToMasterPrompt(
+    masterPrompt,
+    stickerFormat,
+    themeSubjectPrompt
+  );
 }
 
 /**

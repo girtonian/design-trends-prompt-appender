@@ -1,3 +1,5 @@
+import { trendImageById } from "./trendImages";
+
 export interface Trend {
   id: number;
   title: string;
@@ -25,7 +27,7 @@ export const trends: Trend[] = [
     keywords: ["Hand-drawn", "Playful", "Imperfect", "Authentic", "Whimsical"],
     mood: "Joyful, approachable, human",
     applications: ["Brand identity for playful startups", "Editorial illustration", "Packaging design", "Social media content"],
-    imageUrl: "https://images.unsplash.com/photo-1759406066833-d361c4f76bf2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxuYWl2ZSUyMGNoaWxkbGlrZSUyMGlsbHVzdHJhdGlvbnxlbnwxfHx8fDE3NjM1OTA0ODd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    imageUrl: trendImageById[1],
     color: "rgb(255, 237, 213)",
     midjourneyPrompts: {
       masterPrompt: "naïve childlike illustration, hand-drawn doodles, shaky marker outlines, uneven crayon strokes, imperfect proportions, playful scribbles, simple shapes, bright expressive colors, analog paper texture, emotionally raw charm",
@@ -53,7 +55,7 @@ export const trends: Trend[] = [
     keywords: ["Intricate", "Collectible", "Detailed", "Precious", "Miniature"],
     mood: "Curious, intimate, treasured",
     applications: ["E-commerce UI", "Product photography", "Museum exhibits", "Luxury brand experiences"],
-    imageUrl: "https://images.unsplash.com/photo-1671476963151-b99a873e2bf3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzbWFsbCUyMHRyaW5rZXQlMjBvYmplY3RzfGVufDF8fHx8MTc2MzU5MDQ4N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+    imageUrl: trendImageById[2],
     color: "rgb(230, 221, 235)",
     midjourneyPrompts: {
       masterPrompt: "flat-lay catalog of isolated objects, specimen sheet layout, numbered labels, monospaced typography accents, symmetrical grid, nostalgic items, clean shadowless cutouts, archival feel",
@@ -81,7 +83,7 @@ export const trends: Trend[] = [
     keywords: ["Textured", "Atmospheric", "Soft", "Analog", "Warm"],
     mood: "Dreamy, tactile, nostalgic",
     applications: ["App backgrounds", "Web design", "Digital art", "Branding materials"],
-    imageUrl: "https://images.unsplash.com/photo-1722811722309-d4c8c09156cc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxncmFpbnklMjBncmFkaWVudCUyMGFic3RyYWN0fGVufDF8fHx8MTc2MzU5MDQ4N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+    imageUrl: trendImageById[3],
     color: "rgb(255, 228, 225)",
     midjourneyPrompts: {
       masterPrompt: "grainy gradient blur fields, soft airbrush haze, dreamy color transitions, misty atmosphere, editorial minimalism, floating shapes, subtle noise texture",
@@ -109,7 +111,7 @@ export const trends: Trend[] = [
     keywords: ["Organic", "Soft", "Abstract", "Friendly", "Shapeshifting"],
     mood: "Comforting, playful, mysterious",
     applications: ["Brand mascots", "Loading animations", "Illustrations", "NFT projects"],
-    imageUrl: "https://images.unsplash.com/photo-1655065127520-562980be7234?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzb2Z0JTIwZnV6enklMjBjcmVhdHVyZXxlbnwxfHx8fDE3NjM1OTA0ODd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    imageUrl: trendImageById[4],
     color: "rgb(224, 242, 241)",
     midjourneyPrompts: {
       masterPrompt: "fuzzy gradient blob creature, amorphous shape, airbrushed edges, neon candy gradients, chibi face, big round eyes, adorable surreal mascot",
@@ -137,7 +139,7 @@ export const trends: Trend[] = [
     keywords: ["Psychedelic", "Vibrant", "Energetic", "Distorted", "Y2K"],
     mood: "Intense, euphoric, rebellious",
     applications: ["Music visuals", "Festival branding", "Fashion campaigns", "Experimental interfaces"],
-    imageUrl: "https://images.unsplash.com/photo-1759179202885-ed407964363d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhY2lkJTIwcHN5Y2hlZGVsaWMlMjBibHVyfGVufDF8fHx8MTc2MzU5MDQ4N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+    imageUrl: trendImageById[5],
     color: "rgb(255, 220, 255)",
     midjourneyPrompts: {
       masterPrompt: "acid-blur neon gradients, spray-paint plumes, grain-heavy edges, chaotic dreamlike haze, high-saturation glow, energetic poster aesthetic",
@@ -165,7 +167,7 @@ export const trends: Trend[] = [
     keywords: ["Botanical", "Romantic", "Soft-focus", "Dreamy", "Organic"],
     mood: "Serene, romantic, escapist",
     applications: ["Wellness brands", "Beauty products", "Editorial design", "Wedding design"],
-    imageUrl: "https://images.unsplash.com/photo-1747418962997-02ea64c265d8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxldGhlcmVhbCUyMGZsb3JhbCUyMHNvZnR8ZW58MXx8fHwxNzYzNTkwNDg4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+    imageUrl: trendImageById[6],
     color: "rgb(243, 232, 255)",
     midjourneyPrompts: {
       masterPrompt: "ethereal soft-focus florals, dreamy pastel gradients, glowing petals, atmospheric haze, dissolving shapes, elegant minimalist floral aura",
@@ -193,7 +195,7 @@ export const trends: Trend[] = [
     keywords: ["Layered", "Dynamic", "Expressive", "Chaotic", "Bold"],
     mood: "Energetic, experimental, bold",
     applications: ["Poster design", "Album artwork", "Editorial layouts", "Brand campaigns"],
-    imageUrl: "https://images.unsplash.com/photo-1594781301861-5711ec9dcb41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0eXBvZ3JhcGh5JTIwY29sbGFnZSUyMGRlc2lnbnxlbnwxfHx8fDE3NjM1OTA0ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    imageUrl: trendImageById[7],
     color: "rgb(255, 243, 224)",
     midjourneyPrompts: {
       masterPrompt: "chaotic typographic collage, oversized letters, mixed fonts, stretched & warped text, photocopy grain, neon accents, zine-inspired layout",
@@ -221,7 +223,7 @@ export const trends: Trend[] = [
     keywords: ["Raw", "Distressed", "Rebellious", "90s", "Authentic"],
     mood: "Defiant, nostalgic, authentic",
     applications: ["Music industry", "Streetwear brands", "Alternative media", "Youth culture"],
-    imageUrl: "https://images.unsplash.com/photo-1608357416216-c32fa076c289?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwdW5rJTIwZ3J1bmdlJTIwYWVzdGhldGljfGVufDF8fHx8MTc2MzU5MDQ4OXww&ixlib=rb-4.1.0&q=80&w=1080",
+    imageUrl: trendImageById[8],
     color: "rgb(220, 220, 220)",
     midjourneyPrompts: {
       masterPrompt: "grunge zine collage, xerox textures, torn edges, graffiti scribbles, ransom-note letters, gritty halftone patterns, 90s underground aesthetic",
@@ -249,7 +251,7 @@ export const trends: Trend[] = [
     keywords: ["Technical", "Precise", "Functional", "Data-driven", "Minimal"],
     mood: "Precise, intelligent, efficient",
     applications: ["Tech brands", "Data dashboards", "Annual reports", "Architecture"],
-    imageUrl: "https://images.unsplash.com/photo-1642060589615-c61b70f80aa1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzaWduYWwlMjB0ZWNobmljYWwlMjBncmFwaGljc3xlbnwxfHx8fDE3NjM1OTA0ODl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    imageUrl: trendImageById[9],
     color: "rgb(230, 245, 255)",
     midjourneyPrompts: {
       masterPrompt: "MTV-style signal graphics, hyper-saturated neon, cartoon doodles, clunky early 3D blobs, fake UI overlays, chaotic retro motion energy, pop culture surrealism",
@@ -277,7 +279,7 @@ export const trends: Trend[] = [
     keywords: ["Hybrid", "Ornate", "Futuristic", "Historical", "Paradoxical"],
     mood: "Epic, mysterious, timeless",
     applications: ["Fantasy gaming", "Luxury tech", "Speculative fiction", "High-end branding"],
-    imageUrl: "https://images.unsplash.com/photo-1690965704262-83452e27ef53?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpZXZhbCUyMGZ1dHVyaXN0aWN8ZW58MXx8fHwxNzYzNTkwNDg5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+    imageUrl: trendImageById[10],
     color: "rgb(235, 230, 250)",
     midjourneyPrompts: {
       masterPrompt: "future-medieval hybrid, blackletter + futuristic sans-serif, illuminated manuscript meets sci-fi circuitry, relic symbols blended with neon tech textures, glitch parchment, symmetrical ceremonial composition",

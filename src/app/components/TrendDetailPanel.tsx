@@ -90,8 +90,8 @@ export function TrendDetailPanel({ trend }: TrendDetailPanelProps) {
 
   return (
     <div className="figma-panel flex-1 min-h-0 flex flex-col">
-      <div className="flex-1 min-h-0 grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
-        <div className="relative border-r border-border bg-[var(--figma-color-bg-secondary,rgba(0,0,0,0.02))] p-2 flex flex-col">
+      <div className="figma-detail-grid flex-1 min-h-0">
+        <div className="figma-detail-preview relative border-r border-border bg-[var(--figma-color-bg-secondary,rgba(0,0,0,0.02))] p-2 flex flex-col">
           <div className="relative flex-1 min-h-0 rounded overflow-hidden border border-border bg-background">
             <ImageWithFallback
               src={trend.imageUrl}
