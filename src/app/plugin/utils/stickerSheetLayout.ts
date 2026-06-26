@@ -184,10 +184,14 @@ export function imageTransformForCrop(
 }
 
 export const STICKER_DIE_CUT_APPEARANCE =
-  "die-cut vinyl sticker, thick white outline border following subject silhouette, transparent background, no fill behind subject, isolated cutout subject, only white border around sticker edge, no scene background, no colored backdrop";
+  "die-cut vinyl sticker, thick white outline border following subject silhouette, transparent background, isolated cutout subject, only white border around sticker edge";
 
+/** Layout and composition negatives only — no background/backdrop terms. */
 export const STICKER_DIE_CUT_NEGATIVE_ADDITIONS =
-  "colored background, grey backing, gradient backdrop, scene environment, drop shadow, cast shadow, fill behind subject, rectangular photo crop, full bleed background, environment behind subject";
+  "drop shadow, cast shadow, scene environment, rectangular photo crop, overlapping subjects";
+
+export const STICKER_SHEET_VARIETY =
+  "unique varied die-cut stickers, each cell a different subject, no duplicate or repeated designs";
 
 function describeLayoutMargins(spec: StickerSheetLayoutSpec): string {
   const parts: string[] = [];
@@ -217,7 +221,7 @@ export function buildStickerSheetSuffix(
   return (
     `sticker sheet layout, exact ${spec.width} by ${spec.height} pixel canvas, ` +
     `rigid ${spec.columns} column by ${spec.rows} row grid with ${spec.cellSize}px square cells edge-to-edge, ` +
-    `${marginDescription}, ${spec.stickerCount} identical die-cut stickers each centered in its cell fully inside cell bounds, ` +
+    `${marginDescription}, ${spec.stickerCount} ${STICKER_SHEET_VARIETY} each centered in its cell fully inside cell bounds, ` +
     `each sticker ${STICKER_DIE_CUT_APPEARANCE}, pixel-perfect grid alignment, zero inter-cell gaps, slice-ready uniform sizing, ` +
     `rows and columns of isolated cutout subjects, all stickers fully contained within canvas bounds, nothing cropped at sheet edges, ` +
     `non-overlapping sticker layout, no overlapping stickers or shadows`
@@ -227,7 +231,7 @@ export function buildStickerSheetSuffix(
 export const STICKER_SHEET_SUFFIX = buildStickerSheetSuffix(LAYOUT_16_9);
 
 export const STICKER_SHEET_NEGATIVE_ADDITIONS =
-  `single lone sticker, one subject only, full scene background, empty sheet, stickers touching frame edge, cropped or clipped stickers, overlapping stickers, overlapping drop shadows, stickers bleeding outside bounds, tight edge-to-edge layout, zero margin, uneven sticker sizes, non-uniform icon dimensions, irregular spacing, staggered layout, freeform placement, different sticker scales, misaligned grid, overlapping cells, variable cell sizes, content bleeding across cell lines, wrong canvas size, inter-cell gutters, wrong aspect ratio, ${STICKER_DIE_CUT_NEGATIVE_ADDITIONS}`;
+  "single lone sticker, one subject only, duplicate repeated designs, identical stickers, empty sheet, stickers touching frame edge, cropped or clipped stickers, overlapping stickers, overlapping drop shadows, stickers bleeding outside bounds, uneven sticker sizes, misaligned grid, overlapping cells, wrong canvas size, wrong aspect ratio";
 
 export function formatSheetLayoutLabel(spec: StickerSheetLayoutSpec): string {
   return `${spec.columns}×${spec.rows} (${spec.width}×${spec.height})`;

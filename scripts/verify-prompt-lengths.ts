@@ -112,16 +112,20 @@ assert(
   "Dithering Single+Food must not include compact category label"
 );
 assert(
-  ditheringSingleColor.includes("purple backdrop"),
-  "Dithering Single+Color must include dithering color guardrails"
+  ditheringSingleColor.includes("pure greyscale art"),
+  "Dithering Single+Color must include color guardrails"
 );
 assert(
-  !ditheringSingleColor.includes("multiple mugs"),
-  "Must not include observation-based multiple mugs term"
+  !ditheringSingleColor.includes("purple backdrop"),
+  "Must not include purple backdrop in negatives"
 );
 assert(
-  !ditheringSingleColor.includes("colored fill background"),
-  "Must not include observation-based colored fill background term"
+  !ditheringSingleColor.includes("colored solid background"),
+  "Must not include colored solid background in negatives"
+);
+assert(
+  !ditheringSingleColor.includes("identical die-cut"),
+  "Sheet/single prompts must not request identical stickers"
 );
 assert(
   ditheringSingleColor.includes("sticker sheet layout"),
@@ -209,9 +213,27 @@ assert(
   "Sheet mode guardrails must reference layout grid dimensions"
 );
 assert(
-  sheetPrompt.includes("not 16 sticker sheet"),
-  "Sheet mode guardrails must reference sticker count"
+  sheetPrompt.includes("unique varied die-cut stickers"),
+  "Sheet mode must require unique varied stickers"
 );
+assert(
+  sheetPrompt.includes("each cell a different subject"),
+  "Sheet mode must require a different subject per cell"
+);
+assert(
+  sheetPrompt.includes("food and drink only"),
+  "Sheet mode must include compact theme category for variety"
+);
+assert(
+  !sheetPrompt.includes("identical die-cut"),
+  "Sheet mode must not request identical stickers"
+);
+for (const term of forbiddenObservationTerms) {
+  assert(
+    !sheetPrompt.includes(term),
+    `Sheet prompt must not include observation term: ${term}`
+  );
+}
 
 const xeroxOff = buildTrendTapPrompt({
   trend: XEROX_PUNK,

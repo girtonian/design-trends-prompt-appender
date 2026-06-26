@@ -5,6 +5,7 @@ import {
 } from "../../data/trendIds";
 import {
   getStickerSheetLayout,
+  STICKER_SHEET_VARIETY,
   type StickerSheetLayoutSpec,
 } from "./stickerSheetLayout";
 import type { AspectRatioPreset } from "./aspectRatioPresets";
@@ -22,10 +23,9 @@ export const DITHERING_COLOR_SUFFIX_FIGMA =
   "full color ASCII dither on subject glyphs, vibrant colored halftone tones in artwork, colored dither shading not background";
 
 export const DITHERING_COLOR_GUARDRAILS =
-  "pure greyscale art, colored solid background, purple backdrop, gradient background, color fill behind subject, monochrome subject on colored ground";
+  "pure greyscale art, monochrome-only subject palette";
 
-export const DITHERING_MONO_GUARDRAILS =
-  "colored background, solid color backdrop, purple fill behind art";
+export const DITHERING_MONO_GUARDRAILS = "";
 
 export const STICKER_OUTPUT_CONTRACT_SINGLE =
   "One single die-cut sticker on transparent background, centered, one subject only, no grid, no sticker sheet";
@@ -42,11 +42,13 @@ export function buildStickerSingleGuardrails(): string {
   return "sticker sheet layout, multi-subject grid, repeated sticker grid";
 }
 
-/** Sticker-sheet mode: block wrong layout/count for the selected aspect ratio. */
+/** Sticker-sheet mode: block wrong layout/count and duplicate designs. */
 export function buildStickerSheetGuardrails(spec: StickerSheetLayoutSpec): string {
   return [
     "single lone sticker",
     "one subject only",
+    "duplicate repeated designs",
+    "identical stickers",
     "overlapping or cropped stickers",
     "uneven sticker sizing",
     `not ${spec.columns} column by ${spec.rows} row grid`,
@@ -159,7 +161,7 @@ export function buildStickerSheetSuffixFigma(
 
   return (
     `${STICKER_OUTPUT_CONTRACT_SHEET_PREFIX} ${spec.width}x${spec.height}, ${spec.columns}x${spec.rows} grid, ` +
-    `${spec.cellSize}px cells, ${marginNote}${spec.stickerCount} identical die-cut stickers, ` +
+    `${spec.cellSize}px cells, ${marginNote}${spec.stickerCount} ${STICKER_SHEET_VARIETY}, ` +
     `${STICKER_DIE_CUT_FIGMA}, slice-ready grid, no overlap`
   );
 }

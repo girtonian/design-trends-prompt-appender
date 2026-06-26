@@ -151,9 +151,17 @@ export function buildTrendTapPrompt(input: TrendTapPromptInput): string {
     );
   }
 
-  // L1 — theme subject (skip compact "food and drink only" when subject is specific)
+  // L1 — theme subject
   if (themeSubject) {
-    positiveParts.push(themeSubject);
+    if (effectiveStickerFormat === "sheet") {
+      positiveParts.push(`${themeSubject} style direction`);
+      const compactTheme = effectiveThemeId
+        ? getCompactThemeSubject(effectiveThemeId)
+        : null;
+      if (compactTheme) positiveParts.push(compactTheme);
+    } else {
+      positiveParts.push(themeSubject);
+    }
   }
 
   // L2 — style (+ variation hook when no theme subject, or sheet mode)

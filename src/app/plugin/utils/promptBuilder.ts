@@ -27,7 +27,7 @@ export const STICKER_SINGLE_SUFFIX =
   `${STICKER_DIE_CUT_APPEARANCE}, single centered sticker`;
 
 export const STICKER_SINGLE_NEGATIVE_ADDITIONS =
-  `sticker sheet layout, multi-subject grid, repeated sticker grid, ${STICKER_DIE_CUT_NEGATIVE_ADDITIONS}`;
+  "sticker sheet layout, multi-subject grid, repeated sticker grid";
 
 export const STICKER_SINGLE_ASPECT_RATIO = "--ar 1:1";
 
