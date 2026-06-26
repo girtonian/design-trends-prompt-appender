@@ -1,4 +1,4 @@
-# Design Trends Prompt Appender — Prompt Library
+# Trend Tap — Prompt Library
 
 All prompts exported from the plugin source (`src/app/data/trends.ts`).
 Use these with **Figma Weave**, **FLORA.ai**, or any image generation tool.

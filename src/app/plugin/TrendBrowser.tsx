@@ -1,32 +1,37 @@
 /**
- * Main plugin UI — trend grid (tap card to copy prompt + resize Make an image placeholder)
+ * Main plugin UI — trend grid first, refine panel after selection, auto-copy on changes
  */
 
-import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Check } from "lucide-react";
 import { usePluginContext } from "./PluginController";
 import { trends, type Trend } from "../data/trends";
-import {
-  formatPromptToastSuffix,
-  getThemeFooterSuffix,
-  resolveActiveThemeSubjectPrompt,
-} from "../data/themes";
+import { getThemeFooterSuffix } from "../data/themes";
+import { isTrendAvailableForTier, isFreeTrendId, PRO_FEATURE_SUMMARY } from "../data/tierConfig";
 import { TrendCarouselCard } from "../components/TrendCarouselCard";
+import { UpgradePanel } from "../components/UpgradePanel";
 import { PluginResizeHandles } from "../components/PluginResizeHandles";
-import { ThemeSelect } from "../components/ThemeSelect";
 import { AspectRatioSelect } from "../components/AspectRatioSelect";
+import { TrendRefinePanel } from "./TrendRefinePanel";
 import {
   clearTrendData,
+  activateLicense,
   onPluginMessage,
   resizeGenerationTarget,
   saveAspectRatioPreference,
   saveTrendData,
 } from "./utils/figmaMessaging";
 import {
-  buildMasterPromptText,
+  getChibiFooterSuffix,
+  getDitheringColorFooterSuffix,
   getStickerFormatFooterSuffix,
+  getXeroxPatchFooterSuffix,
   type StickerFormat,
 } from "./utils/promptBuilder";
+import {
+  DITHERING_ASCII_TREND_ID,
+  XEROX_PUNK_TREND_ID,
+} from "../data/trendIds";
 import {
   getEffectiveAspectRatio,
   type AspectRatioPreset,
@@ -37,21 +42,17 @@ import {
   getStickerSheetLayout,
 } from "./utils/stickerSheetLayout";
 import { copyTextToClipboard } from "./utils/copyToClipboard";
+import { buildTrendTapPrompt } from "./utils/buildTrendTapPrompt";
 
 /** Set to true to restore TrendDetailPanel import + bottom variations section */
 export const SHOW_PROMPT_VARIATIONS = false;
 
-const STICKER_FORMAT_OPTIONS: { value: StickerFormat; label: string }[] = [
-  { value: "off", label: "Off" },
-  { value: "single", label: "Single" },
-  { value: "sheet", label: "Sheet" },
-];
+const RECOPY_DEBOUNCE_MS = 300;
+const FOOTER_NOTICE_MS = 2200;
 
-const MAKE_IMAGE_TOAST =
-  "Prompt copied — open Make an image and paste (⌘V)";
-
-const NO_PLACEHOLDER_TOAST =
-  "Prompt copied — select a Make an image placeholder to set size";
+type FooterNotice =
+  | { type: "updated" }
+  | { type: "hint"; message: string };
 
 export function TrendBrowser() {
   const {
@@ -62,20 +63,54 @@ export function TrendBrowser() {
     setStickerFormat,
     selectedThemeId,
     setSelectedThemeId,
+    chibiMode,
+    setChibiMode,
+    xeroxPatchMode,
+    setXeroxPatchMode,
+    ditheringColorMode,
+    setDitheringColorMode,
+    isPro,
+    licenseStatus,
+    licenseKeyMasked,
+    setLicenseActivating,
     selectedAspectRatio,
     setSelectedAspectRatio,
     activeGenerationTarget,
   } = usePluginContext();
 
-  const [selectedTrendId, setSelectedTrendId] = useState(1);
+  const [selectedTrendId, setSelectedTrendId] = useState<number | null>(null);
   const [copiedTrendId, setCopiedTrendId] = useState<number | null>(null);
+  const [footerNotice, setFooterNotice] = useState<FooterNotice | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const [isNarrow, setIsNarrow] = useState(false);
+  const recopyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const skipNextRecopyRef = useRef(false);
+  const suppressRecopyRef = useRef(false);
+  const buildAndCopyPromptRef = useRef<(trend: Trend) => Promise<boolean>>(
+    async () => false
+  );
+  const footerNoticeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const appliedTrendId = currentTrendData?.trendId ?? null;
+  const selectedTrend = selectedTrendId
+    ? trends.find((t) => t.id === selectedTrendId) ?? null
+    : null;
+
   const stickerFooterSuffix = getStickerFormatFooterSuffix(stickerFormat);
-  const themeFooterSuffix = getThemeFooterSuffix(selectedThemeId, stickerFormat);
-  const toastSuffix = formatPromptToastSuffix(stickerFormat, selectedThemeId);
+  const chibiFooterSuffix = getChibiFooterSuffix(chibiMode);
+  const xeroxPatchFooterSuffix = getXeroxPatchFooterSuffix(xeroxPatchMode);
+  const ditheringColorFooterSuffix = getDitheringColorFooterSuffix(
+    ditheringColorMode
+  );
+  const themeFooterSuffix = getThemeFooterSuffix(
+    selectedThemeId,
+    stickerFormat,
+    chibiMode
+  );
+  const themeSelectEnabled =
+    stickerFormat !== "off" ||
+    chibiMode ||
+    (selectedTrendId === XEROX_PUNK_TREND_ID && xeroxPatchMode);
   const effectiveAspectRatio = getEffectiveAspectRatio(
     stickerFormat,
     selectedAspectRatio
@@ -87,9 +122,36 @@ export function TrendBrowser() {
   const hasMakeImageTargetSelected = selectedNodes.some(
     (node) => node.isMakeImageTarget
   );
-  const nodesToSaveTrend = selectedNodes.filter(
-    (node) => !node.isMakeImageTarget
+  const nodesToSaveTrend = useMemo(
+    () => selectedNodes.filter((node) => !node.isMakeImageTarget),
+    [selectedNodes]
   );
+  const nodesToSaveTrendIds = useMemo(
+    () => nodesToSaveTrend.map((node) => node.id),
+    [nodesToSaveTrend]
+  );
+
+  const flashFooterHint = useCallback((message: string) => {
+    if (footerNoticeTimerRef.current) {
+      clearTimeout(footerNoticeTimerRef.current);
+    }
+    setFooterNotice({ type: "hint", message });
+    footerNoticeTimerRef.current = setTimeout(
+      () => setFooterNotice(null),
+      FOOTER_NOTICE_MS
+    );
+  }, []);
+
+  const flashPromptUpdated = useCallback(() => {
+    if (footerNoticeTimerRef.current) {
+      clearTimeout(footerNoticeTimerRef.current);
+    }
+    setFooterNotice({ type: "updated" });
+    footerNoticeTimerRef.current = setTimeout(
+      () => setFooterNotice(null),
+      FOOTER_NOTICE_MS
+    );
+  }, []);
 
   useEffect(() => {
     if (appliedTrendId) {
@@ -111,16 +173,26 @@ export function TrendBrowser() {
   }, []);
 
   useEffect(() => {
+    return () => {
+      if (footerNoticeTimerRef.current) {
+        clearTimeout(footerNoticeTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     const cleanup = onPluginMessage((message) => {
-      if (message.type !== "generation-target-ready") return;
-      if (!message.userInitiated) return;
-      if (!message.resized) {
-        toast.message("Select a Make an image placeholder to resize");
+      if (message.type === "license-activated") {
+        flashPromptUpdated();
+        return;
+      }
+      if (message.type === "license-error") {
+        flashFooterHint(message.error ?? "License activation failed.");
       }
     });
 
     return cleanup;
-  }, []);
+  }, [flashFooterHint, flashPromptUpdated]);
 
   const resizeCanvasForCurrentMode = (
     format: StickerFormat,
@@ -136,67 +208,168 @@ export function TrendBrowser() {
     });
   };
 
-  const copyMasterForTrend = async (trend: Trend) => {
-    const themeSubjectPrompt = resolveActiveThemeSubjectPrompt(
-      stickerFormat,
-      selectedThemeId
-    );
-    const text = buildMasterPromptText(
-      trend.midjourneyPrompts.masterPrompt,
-      stickerFormat,
-      themeSubjectPrompt,
-      effectiveAspectRatio
-    );
-    const copied = await copyTextToClipboard(text);
+  const validatePromptModifiers = useCallback((): boolean => {
+    const effectiveStickerFormat = isPro ? stickerFormat : "off";
+    const effectiveChibiMode = isPro && chibiMode;
+    const effectiveXeroxPatchMode = isPro && xeroxPatchMode;
+    const effectiveThemeId = isPro ? selectedThemeId : null;
 
-    if (nodesToSaveTrend.length > 0) {
-      saveTrendData(
-        nodesToSaveTrend.map((n) => n.id),
-        {
-          trendId: trend.id,
-          trendTitle: trend.title,
-          selectedVariationIndex: null,
-          selectedVariation: null,
-          fullPrompt: text,
-          appliedAt: Date.now(),
-          stickerFormat,
-          selectedThemeId,
-        }
-      );
+    if (effectiveStickerFormat === "sheet" && !effectiveThemeId) {
+      flashFooterHint("Choose a theme for sticker sheet prompts");
+      return false;
     }
 
-    const promptToast = hasMakeImageTargetSelected
-      ? MAKE_IMAGE_TOAST
-      : NO_PLACEHOLDER_TOAST;
+    if (effectiveStickerFormat === "single" && !effectiveThemeId) {
+      flashFooterHint("Choose a theme for single sticker prompts");
+      return false;
+    }
 
-    if (copied) {
-      if (nodesToSaveTrend.length > 0) {
-        toast.success(
-          `${promptToast} · Saved to ${nodesToSaveTrend.length} node${nodesToSaveTrend.length !== 1 ? "s" : ""}${toastSuffix}`
-        );
-      } else {
-        toast.success(
-          toastSuffix ? `${promptToast}${toastSuffix}` : promptToast
-        );
+    if (effectiveChibiMode && !effectiveThemeId) {
+      flashFooterHint("Choose a theme for chibi character prompts");
+      return false;
+    }
+
+    if (
+      selectedTrendId === XEROX_PUNK_TREND_ID &&
+      effectiveXeroxPatchMode &&
+      !effectiveThemeId
+    ) {
+      flashFooterHint("Choose a theme for embroidered patch subjects");
+      return false;
+    }
+
+    return true;
+  }, [
+    isPro,
+    stickerFormat,
+    chibiMode,
+    xeroxPatchMode,
+    selectedThemeId,
+    selectedTrendId,
+    flashFooterHint,
+  ]);
+
+  const buildAndCopyPrompt = useCallback(
+    async (trend: Trend): Promise<boolean> => {
+      if (!validatePromptModifiers()) return false;
+
+      const effectiveStickerFormat = isPro ? stickerFormat : "off";
+      const effectiveChibiMode = isPro && chibiMode;
+      const effectiveXeroxPatchMode =
+        isPro &&
+        trend.id === XEROX_PUNK_TREND_ID &&
+        xeroxPatchMode;
+      const effectiveDitheringColorMode =
+        isPro &&
+        trend.id === DITHERING_ASCII_TREND_ID &&
+        ditheringColorMode;
+      const effectiveThemeId = isPro ? selectedThemeId : null;
+
+      const text = buildTrendTapPrompt({
+        trend,
+        variationIndex: trend.id - 1,
+        modifiers: {
+          stickerFormat: effectiveStickerFormat,
+          themeId: effectiveThemeId,
+          chibiMode: effectiveChibiMode,
+          xeroxPatchMode: effectiveXeroxPatchMode,
+          ditheringColorMode: effectiveDitheringColorMode,
+          aspectRatio: effectiveAspectRatio,
+          isPro,
+        },
+      });
+
+      const copied = await copyTextToClipboard(text);
+
+      if (nodesToSaveTrendIds.length > 0) {
+        saveTrendData(nodesToSaveTrendIds, {
+            trendId: trend.id,
+            trendTitle: trend.title,
+            selectedVariationIndex: null,
+            selectedVariation: null,
+            fullPrompt: text,
+            appliedAt: Date.now(),
+            stickerFormat,
+            selectedThemeId,
+        });
       }
-    } else if (nodesToSaveTrend.length > 0) {
-      toast.success(
-        `Prompt saved to ${nodesToSaveTrend.length} node${nodesToSaveTrend.length !== 1 ? "s" : ""}${toastSuffix} (clipboard unavailable)`
-      );
-    } else {
-      toast.error("Failed to copy prompt");
-    }
 
-    return copied;
-  };
+      if (copied) {
+        flashPromptUpdated();
+      }
+
+      return copied;
+    },
+    [
+      validatePromptModifiers,
+      isPro,
+      stickerFormat,
+      chibiMode,
+      xeroxPatchMode,
+      ditheringColorMode,
+      selectedThemeId,
+      effectiveAspectRatio,
+      nodesToSaveTrendIds,
+      flashPromptUpdated,
+    ]
+  );
+
+  buildAndCopyPromptRef.current = buildAndCopyPrompt;
 
   const handleTrendActivate = async (trend: Trend) => {
+    skipNextRecopyRef.current = true;
     setSelectedTrendId(trend.id);
-    const copied = await copyMasterForTrend(trend);
+
+    if (!isTrendAvailableForTier(trend.id, isPro)) {
+      flashFooterHint(PRO_FEATURE_SUMMARY);
+      return;
+    }
+
+    const copied = await buildAndCopyPrompt(trend);
     if (copied) {
       setCopiedTrendId(trend.id);
       setTimeout(() => setCopiedTrendId(null), 2000);
     }
+  };
+
+  useEffect(() => {
+    if (selectedTrendId == null || selectedTrend == null) return;
+    if (!isTrendAvailableForTier(selectedTrendId, isPro)) return;
+    if (suppressRecopyRef.current) return;
+
+    if (skipNextRecopyRef.current) {
+      skipNextRecopyRef.current = false;
+      return;
+    }
+
+    if (recopyTimerRef.current) {
+      clearTimeout(recopyTimerRef.current);
+    }
+
+    recopyTimerRef.current = setTimeout(async () => {
+      if (suppressRecopyRef.current) return;
+      await buildAndCopyPromptRef.current(selectedTrend);
+    }, RECOPY_DEBOUNCE_MS);
+
+    return () => {
+      if (recopyTimerRef.current) {
+        clearTimeout(recopyTimerRef.current);
+      }
+    };
+  }, [
+    selectedTrendId,
+    selectedTrend,
+    stickerFormat,
+    selectedThemeId,
+    chibiMode,
+    xeroxPatchMode,
+    ditheringColorMode,
+    selectedAspectRatio,
+    isPro,
+  ]);
+
+  const handleThemeMenuOpenChange = (open: boolean) => {
+    suppressRecopyRef.current = open;
   };
 
   const handleAspectRatioChange = (preset: AspectRatioPreset) => {
@@ -214,15 +387,33 @@ export function TrendBrowser() {
     const enteringSheet = value === "sheet" && stickerFormat !== "sheet";
     setStickerFormat(value);
     if (enteringSheet && !selectedThemeId) {
-      toast.message("Choose a theme for sticker subjects");
+      flashFooterHint("Choose a theme for sticker subjects");
     }
+  };
+
+  const handleChibiModeChange = (enabled: boolean) => {
+    setChibiMode(enabled);
+    if (enabled && !selectedThemeId) {
+      flashFooterHint("Choose a theme for chibi characters");
+    }
+  };
+
+  const handleXeroxPatchModeChange = (enabled: boolean) => {
+    setXeroxPatchMode(enabled);
+    if (enabled && !selectedThemeId) {
+      flashFooterHint("Choose a theme for embroidered patches");
+    }
+  };
+
+  const handleActivateLicense = (licenseKey: string) => {
+    setLicenseActivating();
+    activateLicense(licenseKey);
   };
 
   const handleClearTrend = () => {
     if (nodesToSaveTrend.length === 0) return;
     const nodeIds = nodesToSaveTrend.map((n) => n.id);
     clearTrendData(nodeIds);
-    toast.success(`Cleared trend from ${nodeIds.length} node${nodeIds.length !== 1 ? "s" : ""}`);
     refreshSelection();
   };
 
@@ -239,19 +430,28 @@ export function TrendBrowser() {
       ? `${activeGenerationTarget.aspectRatio} (${activeGenerationTarget.width}×${activeGenerationTarget.height})`
       : effectiveAspectRatio;
 
+  const visibleTrends = isPro
+    ? trends
+    : trends.filter((trend) => isFreeTrendId(trend.id));
+
   const selectionLabel =
     selectedNodes.length === 0
       ? targetLabel ??
-        (stickerFormat === "sheet"
-          ? `Sticker sheet · ${effectiveAspectRatio}${sheetFooterSuffix}`
-          : stickerFormat !== "off"
-            ? "No selection — sticker prompts copy to clipboard only"
-            : "No selection — prompts copy to clipboard only")
+        (selectedTrendId == null
+          ? "Pick a trend to copy a prompt"
+          : stickerFormat === "sheet"
+            ? `Sticker sheet · ${effectiveAspectRatio}${sheetFooterSuffix}`
+            : stickerFormat !== "off"
+              ? "No selection — sticker prompts copy to clipboard only"
+              : "No selection — prompts copy to clipboard only")
       : selectedNodes.length === 1
         ? hasMakeImageTargetSelected
-          ? `1 node: "${selectedNodes[0].name || "Unnamed"}" · ${makeImageAspectLabel}${stickerFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`
-          : `1 node: "${selectedNodes[0].name || "Unnamed"}"${stickerFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`
-        : `${selectedNodes.length} nodes selected${stickerFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`;
+          ? `1 node: "${selectedNodes[0].name || "Unnamed"}" · ${makeImageAspectLabel}${stickerFooterSuffix}${chibiFooterSuffix}${xeroxPatchFooterSuffix}${ditheringColorFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`
+          : `1 node: "${selectedNodes[0].name || "Unnamed"}"${stickerFooterSuffix}${chibiFooterSuffix}${xeroxPatchFooterSuffix}${ditheringColorFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`
+        : `${selectedNodes.length} nodes selected${stickerFooterSuffix}${chibiFooterSuffix}${xeroxPatchFooterSuffix}${ditheringColorFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`;
+
+  const footerPrimaryLabel =
+    footerNotice?.type === "hint" ? footerNotice.message : selectionLabel;
 
   return (
     <div
@@ -261,38 +461,20 @@ export function TrendBrowser() {
     >
       <PluginResizeHandles />
       <section className="figma-trends-section flex flex-1 flex-col px-3 pt-3 pb-2 min-h-0">
-        <div className="figma-controls-row shrink-0 flex items-center gap-2 mb-2 min-w-0 flex-wrap">
-          <h1 className="figma-section-title shrink-0">Design Trend</h1>
-          <div className="figma-segment-group" role="group" aria-label="Sticker format">
-            {STICKER_FORMAT_OPTIONS.map(({ value, label }) => {
-              const isActive = stickerFormat === value;
-              return (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => handleStickerFormatChange(value)}
-                  aria-pressed={isActive ? "true" : "false"}
-                  className={`figma-segment ${isActive ? "figma-segment-active" : ""}`}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
-          <ThemeSelect
-            value={selectedThemeId}
-            onChange={setSelectedThemeId}
-            stickerFormat={stickerFormat}
+        {!isPro && licenseStatus !== "loading" && (
+          <UpgradePanel
+            licenseStatus={licenseStatus}
+            licenseKeyMasked={licenseKeyMasked}
+            onActivate={handleActivateLicense}
+            onError={flashFooterHint}
           />
-        </div>
+        )}
 
-        <AspectRatioSelect
-          value={effectiveAspectRatio}
-          onChange={handleAspectRatioChange}
-        />
-
-        <div className="figma-trend-grid flex-1 min-h-0">
-          {trends.map((trend) => (
+        <div
+          className="figma-trend-grid flex-1 min-h-0"
+          data-tier={isPro ? "pro" : "free"}
+        >
+          {visibleTrends.map((trend) => (
             <TrendCarouselCard
               key={trend.id}
               trend={trend}
@@ -303,19 +485,56 @@ export function TrendBrowser() {
             />
           ))}
         </div>
+
+        {isPro && selectedTrendId != null && (
+          <TrendRefinePanel
+            selectedTrendId={selectedTrendId}
+            stickerFormat={stickerFormat}
+            onStickerFormatChange={handleStickerFormatChange}
+            selectedThemeId={selectedThemeId}
+            onThemeChange={setSelectedThemeId}
+            onThemeMenuOpenChange={handleThemeMenuOpenChange}
+            themeSelectEnabled={themeSelectEnabled}
+            chibiMode={chibiMode}
+            onChibiModeChange={handleChibiModeChange}
+            xeroxPatchMode={xeroxPatchMode}
+            onXeroxPatchModeChange={handleXeroxPatchModeChange}
+            ditheringColorMode={ditheringColorMode}
+            onDitheringColorModeChange={setDitheringColorMode}
+            effectiveAspectRatio={effectiveAspectRatio}
+            onAspectRatioChange={handleAspectRatioChange}
+          />
+        )}
+
+        {!isPro && (
+          <AspectRatioSelect
+            value={effectiveAspectRatio}
+            onChange={handleAspectRatioChange}
+          />
+        )}
       </section>
 
       <footer className="figma-footer shrink-0 flex items-center justify-between gap-3 px-4 py-2 text-[11px]">
-        <span className="truncate">{selectionLabel}</span>
-        {currentTrendData && appliedTrendId === selectedTrendId && nodesToSaveTrend.length > 0 && (
-          <button
-            type="button"
-            onClick={handleClearTrend}
-            className="figma-link-danger shrink-0"
-          >
-            Clear applied trend
-          </button>
-        )}
+        <span className="truncate min-w-0">{footerPrimaryLabel}</span>
+        <div className="figma-footer-actions shrink-0 flex items-center gap-3">
+          {footerNotice?.type === "updated" && (
+            <span className="figma-footer-updated" aria-live="polite">
+              <Check className="figma-footer-check" aria-hidden="true" />
+              Prompt updated
+            </span>
+          )}
+          {currentTrendData &&
+            appliedTrendId === selectedTrendId &&
+            nodesToSaveTrend.length > 0 && (
+              <button
+                type="button"
+                onClick={handleClearTrend}
+                className="figma-link-danger shrink-0"
+              >
+                Clear applied trend
+              </button>
+            )}
+        </div>
       </footer>
     </div>
   );

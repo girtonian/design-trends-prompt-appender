@@ -14,6 +14,12 @@ import {
   getStickerSheetAspectRatioFlag,
   getStickerSheetLayout,
 } from "./stickerSheetLayout";
+import {
+  fitPromptToFigmaLimit,
+  limitCommaSeparatedParts,
+} from "./figmaPromptLimits";
+import { trends } from "../../data/trends";
+import { buildTrendTapPrompt } from "./buildTrendTapPrompt";
 
 export type StickerFormat = "off" | "single" | "sheet";
 
@@ -21,9 +27,15 @@ export const STICKER_SINGLE_SUFFIX =
   `${STICKER_DIE_CUT_APPEARANCE}, single centered sticker`;
 
 export const STICKER_SINGLE_NEGATIVE_ADDITIONS =
-  `full scene background, no border, multiple scattered subjects, sticker sheet layout, ${STICKER_DIE_CUT_NEGATIVE_ADDITIONS}`;
+  `sticker sheet layout, multi-subject grid, repeated sticker grid, ${STICKER_DIE_CUT_NEGATIVE_ADDITIONS}`;
 
 export const STICKER_SINGLE_ASPECT_RATIO = "--ar 1:1";
+
+export const CHIBI_SUFFIX =
+  "adorable chibi character design, cute kawaii proportions, big expressive eyes, small body big head, charming lovable mascot style";
+
+export const CHIBI_NEGATIVE_ADDITIONS =
+  "realistic human proportions, adult features, uncanny valley, harsh dramatic lighting, gritty realism";
 
 export {
   STICKER_DIE_CUT_APPEARANCE,
@@ -67,6 +79,18 @@ export function getStickerFormatFooterSuffix(format: StickerFormat): string {
     default:
       return "";
   }
+}
+
+export function getChibiFooterSuffix(chibiMode: boolean): string {
+  return chibiMode ? " · Chibi" : "";
+}
+
+export function getXeroxPatchFooterSuffix(xeroxPatchMode: boolean): string {
+  return xeroxPatchMode ? " · Patches" : "";
+}
+
+export function getDitheringColorFooterSuffix(ditheringColorMode: boolean): string {
+  return ditheringColorMode ? " · Color" : "";
 }
 
 /**
@@ -164,6 +188,82 @@ export function buildStickerSheetBatchPrompt(
 
   const mergedNegatives = `${negativePrompts}, ${STICKER_SHEET_NEGATIVE_ADDITIONS}`;
   return `${positiveParts.join(", ")}. No ${mergedNegatives}`;
+}
+
+export interface BuildPluginWeavePromptOptions {
+  stickerFormat: StickerFormat;
+  themeSubjectPrompt?: string | null;
+  /** Theme-specific subject hook (sticker sheet + theme). */
+  subject?: string | null;
+  /** Theme id for compact subject labels when subject hook is absent. */
+  themeId?: import("../../data/themes").ThemeId | null;
+  aspectRatio?: AspectRatioPreset;
+  chibiMode?: boolean;
+  trendId?: number;
+  xeroxPatchMode?: boolean;
+  ditheringColorMode?: boolean;
+  /** When false, sticker/theme/chibi/trend modifiers are stripped. */
+  isPro?: boolean;
+}
+
+/** Strip Pro-only prompt modifiers for free-tier copies. */
+export function resolveProPromptOptions(
+  options: BuildPluginWeavePromptOptions
+): BuildPluginWeavePromptOptions {
+  if (options.isPro !== false) return options;
+  return {
+    ...options,
+    stickerFormat: "off",
+    themeSubjectPrompt: null,
+    subject: null,
+    themeId: null,
+    chibiMode: false,
+    xeroxPatchMode: false,
+    ditheringColorMode: false,
+  };
+}
+
+/**
+ * Weave-ready clipboard prompt for the plugin: delegates to layered buildTrendTapPrompt.
+ */
+export function buildPluginWeavePrompt(
+  masterPrompt: string,
+  variation: string,
+  negativePrompts: string,
+  options: BuildPluginWeavePromptOptions
+): string {
+  const resolved = resolveProPromptOptions(options);
+  const trendId = resolved.trendId ?? 1;
+  const trend = trends.find((t) => t.id === trendId);
+
+  if (!trend) {
+    const hook = cleanVariation(variation).replace(/--style \S+/g, "").trim();
+    const stylePart = extractStyleAnchor(masterPrompt);
+    const positive = hook ? `${stylePart}, ${hook}` : stylePart;
+    const negatives = limitCommaSeparatedParts(negativePrompts, 3);
+    return fitPromptToFigmaLimit(`${positive}. Avoid: ${negatives}.`);
+  }
+
+  const variationIndex = Math.max(
+    0,
+    trend.midjourneyPrompts.variations.indexOf(variation)
+  );
+  const resolvedIndex =
+    variationIndex >= 0 ? variationIndex : trendId - 1;
+
+  return buildTrendTapPrompt({
+    trend,
+    variationIndex: resolvedIndex,
+    modifiers: {
+      stickerFormat: resolved.stickerFormat,
+      themeId: resolved.themeId ?? null,
+      chibiMode: resolved.chibiMode ?? false,
+      xeroxPatchMode: resolved.xeroxPatchMode ?? false,
+      ditheringColorMode: resolved.ditheringColorMode ?? false,
+      aspectRatio: resolved.aspectRatio ?? "16:9",
+      isPro: options.isPro !== false,
+    },
+  });
 }
 
 /**

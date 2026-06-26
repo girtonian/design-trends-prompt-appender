@@ -5,16 +5,16 @@
 
 import { useState, useEffect, useRef, createContext, useContext } from "react";
 import {
-  StoredTrendData,
   onPluginMessage,
   requestSelection,
   getTrendData,
+  loadLicenseStatus,
+  savePluginPreferences,
   type FigmaNode,
+  type StoredTrendData,
 } from "./utils/figmaMessaging";
-import {
-  resolveStickerFormatFromLegacy,
-  type StickerFormat,
-} from "./utils/promptBuilder";
+import type { LicenseUiStatus } from "./utils/licenseTypes";
+import { type StickerFormat } from "./utils/promptBuilder";
 import type { ThemeId } from "../data/themes";
 import {
   DEFAULT_ASPECT_RATIO,
@@ -22,7 +22,6 @@ import {
   type AspectRatioPreset,
 } from "./utils/aspectRatioPresets";
 import { TrendBrowser } from "./TrendBrowser";
-import { Toaster } from "../components/ui/sonner";
 
 export interface ActiveGenerationTarget {
   nodeId: string;
@@ -42,6 +41,16 @@ interface PluginContextState {
   setSelectedThemeId: (id: ThemeId | null) => void;
   selectedAspectRatio: AspectRatioPreset;
   setSelectedAspectRatio: (preset: AspectRatioPreset) => void;
+  chibiMode: boolean;
+  setChibiMode: (enabled: boolean) => void;
+  xeroxPatchMode: boolean;
+  setXeroxPatchMode: (enabled: boolean) => void;
+  ditheringColorMode: boolean;
+  setDitheringColorMode: (enabled: boolean) => void;
+  isPro: boolean;
+  licenseStatus: LicenseUiStatus;
+  licenseKeyMasked?: string;
+  setLicenseActivating: () => void;
   activeGenerationTarget: ActiveGenerationTarget | null;
 }
 
@@ -55,15 +64,6 @@ export function usePluginContext() {
   return context;
 }
 
-function restoreStickerFormat(data: StoredTrendData | null): StickerFormat {
-  if (!data) return "off";
-  return resolveStickerFormatFromLegacy(data.stickerFormat, data.stickerMode);
-}
-
-function restoreThemeId(data: StoredTrendData | null): ThemeId | null {
-  return data?.selectedThemeId ?? null;
-}
-
 export function PluginController() {
   const [selectedNodes, setSelectedNodes] = useState<FigmaNode[]>([]);
   const [currentTrendData, setCurrentTrendData] = useState<StoredTrendData | null>(null);
@@ -71,9 +71,17 @@ export function PluginController() {
   const [selectedThemeId, setSelectedThemeId] = useState<ThemeId | null>(null);
   const [selectedAspectRatio, setSelectedAspectRatio] =
     useState<AspectRatioPreset>(DEFAULT_ASPECT_RATIO);
+  const [chibiMode, setChibiMode] = useState(false);
+  const [xeroxPatchMode, setXeroxPatchMode] = useState(false);
+  const [ditheringColorMode, setDitheringColorMode] = useState(false);
+  const [isPro, setIsPro] = useState(false);
+  const [licenseStatus, setLicenseStatus] =
+    useState<LicenseUiStatus>("loading");
+  const [licenseKeyMasked, setLicenseKeyMasked] = useState<string | undefined>();
   const [activeGenerationTarget, setActiveGenerationTarget] =
     useState<ActiveGenerationTarget | null>(null);
   const aspectSyncedFromCanvasRef = useRef(false);
+  const preferencesLoadedRef = useRef(false);
 
   const refreshSelection = () => {
     requestSelection();
@@ -122,10 +130,6 @@ export function PluginController() {
           break;
         case "trend-data":
           setCurrentTrendData(message.data);
-          if (message.data) {
-            setStickerFormat(restoreStickerFormat(message.data));
-            setSelectedThemeId(restoreThemeId(message.data));
-          }
           break;
         case "save-success":
         case "clear-success":
@@ -136,6 +140,29 @@ export function PluginController() {
             setSelectedAspectRatio(message.aspectRatio);
           }
           break;
+        case "plugin-preferences": {
+          if (
+            message.stickerFormat === "off" ||
+            message.stickerFormat === "single" ||
+            message.stickerFormat === "sheet"
+          ) {
+            setStickerFormat(message.stickerFormat);
+          }
+          if (message.selectedThemeId !== undefined) {
+            setSelectedThemeId(message.selectedThemeId);
+          }
+          if (typeof message.chibiMode === "boolean") {
+            setChibiMode(message.chibiMode);
+          }
+          if (typeof message.xeroxPatchMode === "boolean") {
+            setXeroxPatchMode(message.xeroxPatchMode);
+          }
+          if (typeof message.ditheringColorMode === "boolean") {
+            setDitheringColorMode(message.ditheringColorMode);
+          }
+          preferencesLoadedRef.current = true;
+          break;
+        }
         case "generation-target-ready":
           if (message.resized && message.nodeId && message.nodeName) {
             setActiveGenerationTarget({
@@ -147,14 +174,52 @@ export function PluginController() {
             });
           }
           break;
+        case "license-status":
+          setIsPro(message.isPro === true);
+          setLicenseStatus(
+            message.isPro ? (message.status ?? "pro") : "free"
+          );
+          setLicenseKeyMasked(message.licenseKeyMasked);
+          break;
+        case "license-activated":
+          setIsPro(true);
+          setLicenseStatus("pro");
+          setLicenseKeyMasked(message.licenseKeyMasked);
+          break;
+        case "license-error":
+          setIsPro(false);
+          setLicenseStatus("free");
+          break;
         default:
           break;
       }
     });
 
     requestSelection();
+    loadLicenseStatus();
     return cleanup;
   }, []);
+
+  useEffect(() => {
+    if (!preferencesLoadedRef.current) return;
+    savePluginPreferences({
+      stickerFormat,
+      selectedThemeId,
+      chibiMode,
+      xeroxPatchMode,
+      ditheringColorMode,
+    });
+  }, [
+    stickerFormat,
+    selectedThemeId,
+    chibiMode,
+    xeroxPatchMode,
+    ditheringColorMode,
+  ]);
+
+  const setLicenseActivating = () => {
+    setLicenseStatus("activating");
+  };
 
   const contextValue: PluginContextState = {
     selectedNodes,
@@ -166,13 +231,22 @@ export function PluginController() {
     setSelectedThemeId,
     selectedAspectRatio,
     setSelectedAspectRatio,
+    chibiMode,
+    setChibiMode,
+    xeroxPatchMode,
+    setXeroxPatchMode,
+    ditheringColorMode,
+    setDitheringColorMode,
+    isPro,
+    licenseStatus,
+    licenseKeyMasked,
+    setLicenseActivating,
     activeGenerationTarget,
   };
 
   return (
     <PluginContext.Provider value={contextValue}>
       <TrendBrowser />
-      <Toaster />
     </PluginContext.Provider>
   );
 }

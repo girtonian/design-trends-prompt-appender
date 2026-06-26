@@ -148,3 +148,45 @@ export function loadAspectRatioPreference() {
     type: "load-aspect-ratio",
   });
 }
+
+export function loadLicenseStatus() {
+  postToPlugin({ type: "load-license-status" });
+}
+
+export function activateLicense(licenseKey: string) {
+  postToPlugin({ type: "activate-license", licenseKey });
+}
+
+export function clearLicense() {
+  postToPlugin({ type: "clear-license" });
+}
+
+export function openCheckoutUrl(url: string) {
+  postToPlugin({ type: "open-checkout", url });
+}
+
+export interface PluginPreferencesMessage {
+  type: "plugin-preferences";
+  stickerFormat?: StickerFormat | null;
+  selectedThemeId?: ThemeId | null;
+  chibiMode?: boolean;
+  xeroxPatchMode?: boolean;
+  ditheringColorMode?: boolean;
+}
+
+export function savePluginPreferences(preferences: {
+  stickerFormat: StickerFormat;
+  selectedThemeId: ThemeId | null;
+  chibiMode: boolean;
+  xeroxPatchMode: boolean;
+  ditheringColorMode: boolean;
+}) {
+  postToPlugin({
+    type: "save-plugin-preferences",
+    preferences,
+  });
+}
+
+export function loadPluginPreferences() {
+  postToPlugin({ type: "load-plugin-preferences" });
+}

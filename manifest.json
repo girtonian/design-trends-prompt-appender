@@ -1,5 +1,5 @@
 {
-  "name": "Design Trends Prompt Appender",
+  "name": "Trend Tap",
   "id": "design-trends-prompt-appender",
   "api": "1.0.0",
   "main": "dist/code.js",
@@ -7,10 +7,13 @@
   "editorType": ["figma"],
   "capabilities": [],
   "permissions": [],
+  "networkAccess": {
+    "allowedDomains": ["https://api.lemonsqueezy.com"]
+  },
   "relaunchButtons": [
     {
       "command": "open",
-      "name": "Design Trends",
+      "name": "Trend Tap",
       "multipleSelection": true
     }
   ]

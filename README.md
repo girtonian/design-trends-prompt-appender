@@ -1,6 +1,13 @@
-# Design Trends Prompt Appender
+# Trend Tap
 
-A Figma plugin that applies curated 2026 aesthetic trends to your AI image workflow. Browse trends, copy Midjourney prompts, and save them to selected Figma nodes.
+A Figma plugin that applies curated 2026 aesthetic trends to your AI image workflow. Browse trends, copy Weave-ready prompts, and save them to selected Figma nodes.
+
+## Free vs Pro
+
+- **Free:** 6 trend styles + aspect ratio presets
+- **Pro:** All 10 trends + Sticker, Chibi, Patches, and Color modes (license key unlock)
+
+See [MONETIZATION.md](./MONETIZATION.md) for checkout setup, Community listing copy, and Contra integration.
 
 ## Features
 

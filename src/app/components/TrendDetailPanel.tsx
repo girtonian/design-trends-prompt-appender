@@ -2,30 +2,35 @@ import { useState } from "react";
 import { Trend } from "../data/trends";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { ChevronLeft, ChevronRight, Sparkles, Check } from "lucide-react";
-import { toast } from "sonner";
-import { buildFullPrompt } from "../plugin/utils/promptBuilder";
+import { buildTrendTapPrompt } from "../plugin/utils/buildTrendTapPrompt";
 import { saveTrendData } from "../plugin/utils/figmaMessaging";
 import { copyTextToClipboard } from "../plugin/utils/copyToClipboard";
 import { usePluginContext } from "../plugin/PluginController";
 import {
-  formatPromptToastSuffix,
-  resolveActiveThemeSubjectPrompt,
-} from "../data/themes";
+  DITHERING_ASCII_TREND_ID,
+  XEROX_PUNK_TREND_ID,
+} from "../data/trendIds";
+import { getEffectiveAspectRatio } from "../plugin/utils/aspectRatioPresets";
 
 interface TrendDetailPanelProps {
   trend: Trend;
 }
 
 export function TrendDetailPanel({ trend }: TrendDetailPanelProps) {
-  const { selectedNodes, stickerFormat, selectedThemeId } = usePluginContext();
+  const {
+    selectedNodes,
+    stickerFormat,
+    selectedThemeId,
+    selectedAspectRatio,
+    chibiMode,
+    xeroxPatchMode,
+    ditheringColorMode,
+    isPro,
+  } = usePluginContext();
   const [variationIndex, setVariationIndex] = useState(0);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const variations = trend.midjourneyPrompts.variations;
-  const themeSubjectPrompt = resolveActiveThemeSubjectPrompt(
-    stickerFormat,
-    selectedThemeId
-  );
 
   const handlePrevVariation = () => {
     setVariationIndex((i) => (i > 0 ? i - 1 : variations.length - 1));
@@ -37,13 +42,25 @@ export function TrendDetailPanel({ trend }: TrendDetailPanelProps) {
 
   const copyPrompt = async (index: number) => {
     const variation = variations[index];
-    const fullPrompt = buildFullPrompt(
-      trend.midjourneyPrompts.masterPrompt,
-      variation,
-      trend.midjourneyPrompts.aspectRatios,
-      trend.midjourneyPrompts.negativePrompts,
-      { stickerFormat, themeSubjectPrompt }
+    const effectiveAspectRatio = getEffectiveAspectRatio(
+      stickerFormat,
+      selectedAspectRatio
     );
+    const fullPrompt = buildTrendTapPrompt({
+      trend,
+      variationIndex: index,
+      modifiers: {
+        stickerFormat,
+        themeId: selectedThemeId,
+        chibiMode,
+        xeroxPatchMode:
+          trend.id === XEROX_PUNK_TREND_ID ? xeroxPatchMode : false,
+        ditheringColorMode:
+          trend.id === DITHERING_ASCII_TREND_ID ? ditheringColorMode : false,
+        aspectRatio: effectiveAspectRatio,
+        isPro,
+      },
+    });
 
     const copied = await copyTextToClipboard(fullPrompt);
     setVariationIndex(index);
@@ -67,24 +84,6 @@ export function TrendDetailPanel({ trend }: TrendDetailPanelProps) {
     if (copied) {
       setCopiedIndex(index);
       setTimeout(() => setCopiedIndex(null), 2000);
-    }
-
-    const toastSuffix = formatPromptToastSuffix(stickerFormat, selectedThemeId);
-
-    if (selectedNodes.length > 0) {
-      toast.success(
-        copied
-          ? `Prompt copied & saved to ${selectedNodes.length} node${selectedNodes.length !== 1 ? "s" : ""}${toastSuffix}`
-          : `Prompt saved to ${selectedNodes.length} node${selectedNodes.length !== 1 ? "s" : ""}${toastSuffix} (clipboard unavailable)`
-      );
-    } else if (copied) {
-      toast.success(
-        toastSuffix
-          ? `Midjourney prompt copied!${toastSuffix}`
-          : "Midjourney prompt copied!"
-      );
-    } else {
-      toast.error("Failed to copy prompt");
     }
   };
 
@@ -125,14 +124,14 @@ export function TrendDetailPanel({ trend }: TrendDetailPanelProps) {
               type="button"
               onClick={() => copyPrompt(variationIndex)}
               className="figma-btn absolute bottom-2 right-2 gap-1.5 px-2"
-              title="Copy Midjourney prompt"
+              title="Copy Weave-ready prompt"
             >
               {copiedIndex === variationIndex ? (
                 <Check className="h-3.5 w-3.5 figma-icon-success" />
               ) : (
                 <Sparkles className="h-3.5 w-3.5 opacity-70" />
               )}
-              <span className="text-[10px] font-medium">MJ prompt</span>
+              <span className="text-[10px] font-medium">Weave prompt</span>
             </button>
           </div>
         </div>

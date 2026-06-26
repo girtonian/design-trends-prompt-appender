@@ -80,24 +80,27 @@ export function getThemeLabel(themeId: ThemeId | null): string {
 
 export function getThemeFooterSuffix(
   themeId: ThemeId | null,
-  stickerFormat: "off" | "single" | "sheet"
+  stickerFormat: "off" | "single" | "sheet",
+  chibiMode = false
 ): string {
-  if (stickerFormat === "off" || !themeId) return "";
+  if ((stickerFormat === "off" && !chibiMode) || !themeId) return "";
   const label = getThemeLabel(themeId);
   return label ? ` · ${label}` : "";
 }
 
 export function resolveActiveThemeSubjectPrompt(
   stickerFormat: "off" | "single" | "sheet",
-  themeId: ThemeId | null
+  themeId: ThemeId | null,
+  chibiMode = false
 ): string | null {
-  if (stickerFormat === "off") return null;
+  if (stickerFormat === "off" && !chibiMode) return null;
   return getThemeSubjectPrompt(themeId);
 }
 
 export function formatPromptToastSuffix(
   stickerFormat: "off" | "single" | "sheet",
-  themeId: ThemeId | null
+  themeId: ThemeId | null,
+  chibiMode = false
 ): string {
   const parts: string[] = [];
   const stickerLabel = stickerFormat === "single"
@@ -106,7 +109,8 @@ export function formatPromptToastSuffix(
       ? "sticker sheet"
       : "";
   if (stickerLabel) parts.push(stickerLabel);
+  if (chibiMode) parts.push("chibi");
   const themeLabel = getThemeLabel(themeId);
-  if (themeLabel && stickerFormat !== "off") parts.push(themeLabel);
+  if (themeLabel && (stickerFormat !== "off" || chibiMode)) parts.push(themeLabel);
   return parts.length > 0 ? ` (${parts.join(", ")})` : "";
 }

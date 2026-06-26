@@ -15,6 +15,18 @@ import {
   resizeMakeImageTarget,
   tagMakeImageTarget,
 } from "./app/plugin/utils/makeImageTarget";
+import {
+  activateLicenseKey,
+  clearStoredLicense,
+  openExternalCheckout,
+  resolveLicenseStatus,
+} from "./app/plugin/utils/licenseSandbox";
+import {
+  PLUGIN_PREFERENCES_STORAGE_KEY,
+  type PluginPreferences,
+} from "./app/plugin/utils/pluginPreferences";
+import { promptThemes, type ThemeId } from "./app/data/themes";
+import type { StickerFormat } from "./app/plugin/utils/promptBuilder";
 
 const UI_SIZE_KEY = 'uiSize';
 const DEFAULT_UI_SIZE = { width: 360, height: 520 };
@@ -31,6 +43,55 @@ function clampUiSize(width: number, height: number) {
 
 function canSetRelaunchData(node: BaseNode): node is SceneNode {
   return 'setRelaunchData' in node;
+}
+
+function isStickerFormat(value: unknown): value is StickerFormat {
+  return value === "off" || value === "single" || value === "sheet";
+}
+
+function isValidThemeId(value: unknown): value is ThemeId | null {
+  if (value == null) return true;
+  return (
+    typeof value === "string" &&
+    promptThemes.some((theme) => theme.id === value)
+  );
+}
+
+function sanitizePluginPreferences(raw: unknown): PluginPreferences {
+  if (!raw || typeof raw !== "object") return {};
+  const data = raw as Record<string, unknown>;
+  const prefs: PluginPreferences = {};
+
+  if (isStickerFormat(data.stickerFormat)) {
+    prefs.stickerFormat = data.stickerFormat;
+  }
+  if (isValidThemeId(data.selectedThemeId)) {
+    prefs.selectedThemeId = data.selectedThemeId ?? null;
+  }
+  if (typeof data.chibiMode === "boolean") {
+    prefs.chibiMode = data.chibiMode;
+  }
+  if (typeof data.xeroxPatchMode === "boolean") {
+    prefs.xeroxPatchMode = data.xeroxPatchMode;
+  }
+  if (typeof data.ditheringColorMode === "boolean") {
+    prefs.ditheringColorMode = data.ditheringColorMode;
+  }
+
+  return prefs;
+}
+
+async function postPluginPreferences(): Promise<void> {
+  try {
+    const saved = await figma.clientStorage.getAsync(PLUGIN_PREFERENCES_STORAGE_KEY);
+    const prefs = sanitizePluginPreferences(saved);
+    figma.ui.postMessage({
+      type: "plugin-preferences",
+      ...prefs,
+    });
+  } catch {
+    figma.ui.postMessage({ type: "plugin-preferences" });
+  }
 }
 
 function setRelaunchForNode(node: BaseNode) {
@@ -317,6 +378,73 @@ figma.ui.onmessage = (msg) => {
       break;
     }
 
+    case 'save-plugin-preferences': {
+      const prefs = sanitizePluginPreferences(msg.preferences);
+      void figma.clientStorage.setAsync(PLUGIN_PREFERENCES_STORAGE_KEY, prefs);
+      break;
+    }
+
+    case 'load-plugin-preferences': {
+      void postPluginPreferences();
+      break;
+    }
+
+    case 'load-license-status': {
+      void (async () => {
+        try {
+          const status = await resolveLicenseStatus();
+          figma.ui.postMessage({
+            type: 'license-status',
+            ...status,
+          });
+        } catch {
+          figma.ui.postMessage({
+            type: 'license-status',
+            isPro: false,
+            status: 'free',
+          });
+        }
+      })();
+      break;
+    }
+
+    case 'activate-license': {
+      void (async () => {
+        try {
+          const result = await activateLicenseKey(msg.licenseKey as string);
+          figma.ui.postMessage({
+            type: 'license-activated',
+            isPro: true,
+            ...result,
+          });
+        } catch (error) {
+          figma.ui.postMessage({
+            type: 'license-error',
+            error:
+              error instanceof Error ? error.message : 'License activation failed.',
+          });
+        }
+      })();
+      break;
+    }
+
+    case 'clear-license': {
+      void (async () => {
+        await clearStoredLicense();
+        figma.ui.postMessage({
+          type: 'license-status',
+          isPro: false,
+          status: 'free',
+        });
+      })();
+      break;
+    }
+
+    case 'open-checkout': {
+      openExternalCheckout(msg.url as string);
+      break;
+    }
+
     case 'close-plugin':
       figma.closePlugin();
       break;
@@ -445,6 +573,22 @@ void (async () => {
     figma.ui.postMessage({
       type: 'aspect-ratio-preference',
       aspectRatio: null,
+    });
+  }
+
+  await postPluginPreferences();
+
+  try {
+    const license = await resolveLicenseStatus();
+    figma.ui.postMessage({
+      type: 'license-status',
+      ...license,
+    });
+  } catch {
+    figma.ui.postMessage({
+      type: 'license-status',
+      isPro: false,
+      status: 'free',
     });
   }
 })();
