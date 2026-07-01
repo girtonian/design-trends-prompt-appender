@@ -1,20 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { getThemeById, promptThemes, type ThemeId } from "../data/themes";
+import { getPatchTypeById, patchTypes, type PatchTypeId } from "../data/patchTypes";
 
-interface ThemeSelectProps {
-  value: ThemeId | null;
-  onChange: (id: ThemeId | null) => void;
+interface PatchTypeSelectProps {
+  value: PatchTypeId;
+  onChange: (id: PatchTypeId) => void;
   disabled?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 
-export function ThemeSelect({
+export function PatchTypeSelect({
   value,
   onChange,
   disabled = false,
   onOpenChange,
-}: ThemeSelectProps) {
+}: PatchTypeSelectProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -39,7 +39,7 @@ export function ThemeSelect({
     return () => document.removeEventListener("mousedown", onDocumentMouseDown);
   }, [open]);
 
-  const label = value ? getThemeById(value)?.label ?? "Default" : "Default";
+  const label = getPatchTypeById(value)?.label ?? "Embroidered";
 
   return (
     <div className="figma-theme-select" ref={rootRef}>
@@ -49,11 +49,11 @@ export function ThemeSelect({
         disabled={disabled}
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label="Theme category"
+        aria-label="Patch type"
         title={
           disabled
-            ? "Turn on Sticker mode to choose a theme"
-            : "Theme category for sticker subjects (Default = trend style only)"
+            ? "Turn on Patches to choose a patch type"
+            : "Patch material for the copied prompt"
         }
         onMouseDown={(event) => event.stopPropagation()}
         onClick={(event) => {
@@ -68,40 +68,25 @@ export function ThemeSelect({
         />
       </button>
       {open && (
-        <ul className="figma-theme-select-menu" role="listbox" aria-label="Themes">
-          <li key="__default">
-            <button
-              type="button"
-              role="option"
-              aria-selected={value === null}
-              className={`figma-theme-select-option ${value === null ? "figma-theme-select-option-active" : ""}`}
-              onMouseDown={(event) => event.stopPropagation()}
-              onClick={(event) => {
-                event.stopPropagation();
-                onChange(null);
-                setMenuOpen(false);
-              }}
-            >
-              Default
-            </button>
-          </li>
-          {promptThemes.map((theme) => {
-            const isActive = value === theme.id;
+        <ul className="figma-theme-select-menu" role="listbox" aria-label="Patch types">
+          {patchTypes.map((patchType) => {
+            const isActive = value === patchType.id;
             return (
-              <li key={theme.id}>
+              <li key={patchType.id}>
                 <button
                   type="button"
                   role="option"
                   aria-selected={isActive}
+                  title={patchType.description}
                   className={`figma-theme-select-option ${isActive ? "figma-theme-select-option-active" : ""}`}
                   onMouseDown={(event) => event.stopPropagation()}
                   onClick={(event) => {
                     event.stopPropagation();
-                    onChange(theme.id);
+                    onChange(patchType.id);
                     setMenuOpen(false);
                   }}
                 >
-                  {theme.label}
+                  {patchType.label}
                 </button>
               </li>
             );

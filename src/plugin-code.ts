@@ -26,6 +26,7 @@ import {
   type PluginPreferences,
 } from "./app/plugin/utils/pluginPreferences";
 import { promptThemes, type ThemeId } from "./app/data/themes";
+import { isPatchTypeId } from "./app/data/patchTypes";
 import type { StickerFormat } from "./app/plugin/utils/promptBuilder";
 
 const UI_SIZE_KEY = 'uiSize';
@@ -71,8 +72,11 @@ function sanitizePluginPreferences(raw: unknown): PluginPreferences {
   if (typeof data.chibiMode === "boolean") {
     prefs.chibiMode = data.chibiMode;
   }
-  if (typeof data.xeroxPatchMode === "boolean") {
-    prefs.xeroxPatchMode = data.xeroxPatchMode;
+  if (typeof data.patchMode === "boolean") {
+    prefs.patchMode = data.patchMode;
+  }
+  if (isPatchTypeId(data.patchType)) {
+    prefs.patchType = data.patchType;
   }
   if (typeof data.ditheringColorMode === "boolean") {
     prefs.ditheringColorMode = data.ditheringColorMode;

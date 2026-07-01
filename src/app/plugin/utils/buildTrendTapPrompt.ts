@@ -1,11 +1,8 @@
 import type { Trend } from "../../data/trends";
 import type { ThemeId } from "../../data/themes";
 import { getThemeTrendSubject } from "../../data/themeSubjects";
-import { getThemeLabel } from "../../data/themes";
-import {
-  DITHERING_ASCII_TREND_ID,
-  XEROX_PUNK_TREND_ID,
-} from "../../data/trendIds";
+import { DITHERING_ASCII_TREND_ID } from "../../data/trendIds";
+import { getPatchTypeById, type PatchTypeId } from "../../data/patchTypes";
 import type { AspectRatioPreset } from "./aspectRatioPresets";
 import {
   CHIBI_SUFFIX_FIGMA,
@@ -14,7 +11,6 @@ import {
   STICKER_OUTPUT_CONTRACT_SINGLE,
   STICKER_SINGLE_FINISH_FIGMA,
   buildStickerSheetSuffixFigma,
-  buildXeroxPatchSuffixFigma,
   fitPromptToFigmaLimit,
   getCompactThemeSubject,
 } from "./figmaPromptLimits";
@@ -25,7 +21,8 @@ export interface TrendTapModifiers {
   stickerFormat: StickerFormat;
   themeId: ThemeId | null;
   chibiMode: boolean;
-  xeroxPatchMode: boolean;
+  patchMode: boolean;
+  patchType: PatchTypeId;
   ditheringColorMode: boolean;
   aspectRatio: AspectRatioPreset;
   isPro: boolean;
@@ -108,15 +105,15 @@ export function buildTrendTapPrompt(input: TrendTapPromptInput): string {
     stickerFormat,
     themeId,
     chibiMode,
-    xeroxPatchMode,
+    patchMode,
+    patchType,
     ditheringColorMode,
     aspectRatio,
     isPro,
   } = modifiers;
 
   const trendId = trend.id;
-  const effectiveXeroxPatchMode =
-    isPro && trendId === XEROX_PUNK_TREND_ID && xeroxPatchMode;
+  const effectivePatchMode = isPro && patchMode;
   const effectiveDitheringColorMode =
     isPro && trendId === DITHERING_ASCII_TREND_ID && ditheringColorMode;
   const effectiveStickerFormat = isPro ? stickerFormat : "off";
@@ -136,7 +133,9 @@ export function buildTrendTapPrompt(input: TrendTapPromptInput): string {
 
   const themeSubject =
     effectiveThemeId &&
-    (effectiveStickerFormat === "single" || effectiveStickerFormat === "sheet")
+    (effectiveStickerFormat === "single" ||
+      effectiveStickerFormat === "sheet" ||
+      effectivePatchMode)
       ? getThemeTrendSubject(effectiveThemeId, variationIndex)
       : null;
 
@@ -178,18 +177,13 @@ export function buildTrendTapPrompt(input: TrendTapPromptInput): string {
     positiveParts.push(
       buildStyleLayer(masterPrompt, hook, trendId, effectiveDitheringColorMode, true)
     );
-    if (effectiveChibiMode && effectiveThemeId) {
-      const compactTheme = getCompactThemeSubject(effectiveThemeId);
-      if (compactTheme) positiveParts.push(compactTheme);
-    }
   }
 
   // L3 — trend-specific modifiers
-  if (effectiveXeroxPatchMode && effectiveThemeId) {
-    const themeLabel =
-      getCompactThemeSubject(effectiveThemeId) ?? getThemeLabel(effectiveThemeId);
-    if (themeLabel) {
-      positiveParts.push(buildXeroxPatchSuffixFigma(themeLabel));
+  if (effectivePatchMode) {
+    const patchTypeOption = getPatchTypeById(patchType);
+    if (patchTypeOption) {
+      positiveParts.push(patchTypeOption.promptSuffix);
     }
   }
 
@@ -211,7 +205,8 @@ export function buildTrendTapPrompt(input: TrendTapPromptInput): string {
     aspectRatio,
     trendId,
     chibiMode: effectiveChibiMode,
-    xeroxPatchMode: effectiveXeroxPatchMode,
+    patchMode: effectivePatchMode,
+    patchType,
     ditheringColorMode: effectiveDitheringColorMode,
     trendNegatives,
   });

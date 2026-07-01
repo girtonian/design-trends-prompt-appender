@@ -6,10 +6,7 @@ import { buildTrendTapPrompt } from "../plugin/utils/buildTrendTapPrompt";
 import { saveTrendData } from "../plugin/utils/figmaMessaging";
 import { copyTextToClipboard } from "../plugin/utils/copyToClipboard";
 import { usePluginContext } from "../plugin/PluginController";
-import {
-  DITHERING_ASCII_TREND_ID,
-  XEROX_PUNK_TREND_ID,
-} from "../data/trendIds";
+import { DITHERING_ASCII_TREND_ID } from "../data/trendIds";
 import { getEffectiveAspectRatio } from "../plugin/utils/aspectRatioPresets";
 
 interface TrendDetailPanelProps {
@@ -23,7 +20,8 @@ export function TrendDetailPanel({ trend }: TrendDetailPanelProps) {
     selectedThemeId,
     selectedAspectRatio,
     chibiMode,
-    xeroxPatchMode,
+    patchMode,
+    patchType,
     ditheringColorMode,
     isPro,
   } = usePluginContext();
@@ -53,8 +51,8 @@ export function TrendDetailPanel({ trend }: TrendDetailPanelProps) {
         stickerFormat,
         themeId: selectedThemeId,
         chibiMode,
-        xeroxPatchMode:
-          trend.id === XEROX_PUNK_TREND_ID ? xeroxPatchMode : false,
+        patchMode,
+        patchType,
         ditheringColorMode:
           trend.id === DITHERING_ASCII_TREND_ID ? ditheringColorMode : false,
         aspectRatio: effectiveAspectRatio,

@@ -25,13 +25,11 @@ import {
   getChibiFooterSuffix,
   getDitheringColorFooterSuffix,
   getStickerFormatFooterSuffix,
-  getXeroxPatchFooterSuffix,
+  getPatchFooterSuffix,
   type StickerFormat,
 } from "./utils/promptBuilder";
-import {
-  DITHERING_ASCII_TREND_ID,
-  XEROX_PUNK_TREND_ID,
-} from "../data/trendIds";
+import { DITHERING_ASCII_TREND_ID } from "../data/trendIds";
+import type { PatchTypeId } from "../data/patchTypes";
 import {
   getEffectiveAspectRatio,
   type AspectRatioPreset,
@@ -65,8 +63,10 @@ export function TrendBrowser() {
     setSelectedThemeId,
     chibiMode,
     setChibiMode,
-    xeroxPatchMode,
-    setXeroxPatchMode,
+    patchMode,
+    setPatchMode,
+    patchType,
+    setPatchType,
     ditheringColorMode,
     setDitheringColorMode,
     isPro,
@@ -98,19 +98,16 @@ export function TrendBrowser() {
 
   const stickerFooterSuffix = getStickerFormatFooterSuffix(stickerFormat);
   const chibiFooterSuffix = getChibiFooterSuffix(chibiMode);
-  const xeroxPatchFooterSuffix = getXeroxPatchFooterSuffix(xeroxPatchMode);
+  const patchFooterSuffix = getPatchFooterSuffix(patchMode, patchType);
   const ditheringColorFooterSuffix = getDitheringColorFooterSuffix(
     ditheringColorMode
   );
   const themeFooterSuffix = getThemeFooterSuffix(
     selectedThemeId,
     stickerFormat,
-    chibiMode
+    patchMode
   );
-  const themeSelectEnabled =
-    stickerFormat !== "off" ||
-    chibiMode ||
-    (selectedTrendId === XEROX_PUNK_TREND_ID && xeroxPatchMode);
+  const themeSelectEnabled = stickerFormat !== "off" || patchMode;
   const effectiveAspectRatio = getEffectiveAspectRatio(
     stickerFormat,
     selectedAspectRatio
@@ -208,57 +205,11 @@ export function TrendBrowser() {
     });
   };
 
-  const validatePromptModifiers = useCallback((): boolean => {
-    const effectiveStickerFormat = isPro ? stickerFormat : "off";
-    const effectiveChibiMode = isPro && chibiMode;
-    const effectiveXeroxPatchMode = isPro && xeroxPatchMode;
-    const effectiveThemeId = isPro ? selectedThemeId : null;
-
-    if (effectiveStickerFormat === "sheet" && !effectiveThemeId) {
-      flashFooterHint("Choose a theme for sticker sheet prompts");
-      return false;
-    }
-
-    if (effectiveStickerFormat === "single" && !effectiveThemeId) {
-      flashFooterHint("Choose a theme for single sticker prompts");
-      return false;
-    }
-
-    if (effectiveChibiMode && !effectiveThemeId) {
-      flashFooterHint("Choose a theme for chibi character prompts");
-      return false;
-    }
-
-    if (
-      selectedTrendId === XEROX_PUNK_TREND_ID &&
-      effectiveXeroxPatchMode &&
-      !effectiveThemeId
-    ) {
-      flashFooterHint("Choose a theme for embroidered patch subjects");
-      return false;
-    }
-
-    return true;
-  }, [
-    isPro,
-    stickerFormat,
-    chibiMode,
-    xeroxPatchMode,
-    selectedThemeId,
-    selectedTrendId,
-    flashFooterHint,
-  ]);
-
   const buildAndCopyPrompt = useCallback(
     async (trend: Trend): Promise<boolean> => {
-      if (!validatePromptModifiers()) return false;
-
       const effectiveStickerFormat = isPro ? stickerFormat : "off";
       const effectiveChibiMode = isPro && chibiMode;
-      const effectiveXeroxPatchMode =
-        isPro &&
-        trend.id === XEROX_PUNK_TREND_ID &&
-        xeroxPatchMode;
+      const effectivePatchMode = isPro && patchMode;
       const effectiveDitheringColorMode =
         isPro &&
         trend.id === DITHERING_ASCII_TREND_ID &&
@@ -272,7 +223,8 @@ export function TrendBrowser() {
           stickerFormat: effectiveStickerFormat,
           themeId: effectiveThemeId,
           chibiMode: effectiveChibiMode,
-          xeroxPatchMode: effectiveXeroxPatchMode,
+          patchMode: effectivePatchMode,
+          patchType,
           ditheringColorMode: effectiveDitheringColorMode,
           aspectRatio: effectiveAspectRatio,
           isPro,
@@ -301,11 +253,11 @@ export function TrendBrowser() {
       return copied;
     },
     [
-      validatePromptModifiers,
       isPro,
       stickerFormat,
       chibiMode,
-      xeroxPatchMode,
+      patchMode,
+      patchType,
       ditheringColorMode,
       selectedThemeId,
       effectiveAspectRatio,
@@ -362,7 +314,8 @@ export function TrendBrowser() {
     stickerFormat,
     selectedThemeId,
     chibiMode,
-    xeroxPatchMode,
+    patchMode,
+    patchType,
     ditheringColorMode,
     selectedAspectRatio,
     isPro,
@@ -398,11 +351,15 @@ export function TrendBrowser() {
     }
   };
 
-  const handleXeroxPatchModeChange = (enabled: boolean) => {
-    setXeroxPatchMode(enabled);
+  const handlePatchModeChange = (enabled: boolean) => {
+    setPatchMode(enabled);
     if (enabled && !selectedThemeId) {
-      flashFooterHint("Choose a theme for embroidered patches");
+      flashFooterHint("Add a theme to focus patch subjects");
     }
+  };
+
+  const handlePatchTypeChange = (id: PatchTypeId) => {
+    setPatchType(id);
   };
 
   const handleActivateLicense = (licenseKey: string) => {
@@ -446,9 +403,9 @@ export function TrendBrowser() {
               : "No selection — prompts copy to clipboard only")
       : selectedNodes.length === 1
         ? hasMakeImageTargetSelected
-          ? `1 node: "${selectedNodes[0].name || "Unnamed"}" · ${makeImageAspectLabel}${stickerFooterSuffix}${chibiFooterSuffix}${xeroxPatchFooterSuffix}${ditheringColorFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`
-          : `1 node: "${selectedNodes[0].name || "Unnamed"}"${stickerFooterSuffix}${chibiFooterSuffix}${xeroxPatchFooterSuffix}${ditheringColorFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`
-        : `${selectedNodes.length} nodes selected${stickerFooterSuffix}${chibiFooterSuffix}${xeroxPatchFooterSuffix}${ditheringColorFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`;
+          ? `1 node: "${selectedNodes[0].name || "Unnamed"}" · ${makeImageAspectLabel}${stickerFooterSuffix}${chibiFooterSuffix}${patchFooterSuffix}${ditheringColorFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`
+          : `1 node: "${selectedNodes[0].name || "Unnamed"}"${stickerFooterSuffix}${chibiFooterSuffix}${patchFooterSuffix}${ditheringColorFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`
+        : `${selectedNodes.length} nodes selected${stickerFooterSuffix}${chibiFooterSuffix}${patchFooterSuffix}${ditheringColorFooterSuffix}${sheetFooterSuffix}${themeFooterSuffix}`;
 
   const footerPrimaryLabel =
     footerNotice?.type === "hint" ? footerNotice.message : selectionLabel;
@@ -497,8 +454,11 @@ export function TrendBrowser() {
             themeSelectEnabled={themeSelectEnabled}
             chibiMode={chibiMode}
             onChibiModeChange={handleChibiModeChange}
-            xeroxPatchMode={xeroxPatchMode}
-            onXeroxPatchModeChange={handleXeroxPatchModeChange}
+            patchMode={patchMode}
+            onPatchModeChange={handlePatchModeChange}
+            patchType={patchType}
+            onPatchTypeChange={handlePatchTypeChange}
+            onPatchTypeMenuOpenChange={handleThemeMenuOpenChange}
             ditheringColorMode={ditheringColorMode}
             onDitheringColorModeChange={setDitheringColorMode}
             effectiveAspectRatio={effectiveAspectRatio}

@@ -78,12 +78,13 @@ export function getThemeLabel(themeId: ThemeId | null): string {
   return getThemeById(themeId)?.label ?? "";
 }
 
+/** Theme applies to sticker mode and Patches; chibi is an independent modifier. */
 export function getThemeFooterSuffix(
   themeId: ThemeId | null,
   stickerFormat: "off" | "single" | "sheet",
-  chibiMode = false
+  patchMode = false
 ): string {
-  if ((stickerFormat === "off" && !chibiMode) || !themeId) return "";
+  if ((stickerFormat === "off" && !patchMode) || !themeId) return "";
   const label = getThemeLabel(themeId);
   return label ? ` · ${label}` : "";
 }
@@ -91,9 +92,9 @@ export function getThemeFooterSuffix(
 export function resolveActiveThemeSubjectPrompt(
   stickerFormat: "off" | "single" | "sheet",
   themeId: ThemeId | null,
-  chibiMode = false
+  patchMode = false
 ): string | null {
-  if (stickerFormat === "off" && !chibiMode) return null;
+  if (stickerFormat === "off" && !patchMode) return null;
   return getThemeSubjectPrompt(themeId);
 }
 
@@ -111,6 +112,6 @@ export function formatPromptToastSuffix(
   if (stickerLabel) parts.push(stickerLabel);
   if (chibiMode) parts.push("chibi");
   const themeLabel = getThemeLabel(themeId);
-  if (themeLabel && (stickerFormat !== "off" || chibiMode)) parts.push(themeLabel);
+  if (themeLabel && stickerFormat !== "off") parts.push(themeLabel);
   return parts.length > 0 ? ` (${parts.join(", ")})` : "";
 }

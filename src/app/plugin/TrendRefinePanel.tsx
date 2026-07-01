@@ -1,10 +1,9 @@
 import type { ThemeId } from "../data/themes";
-import {
-  DITHERING_ASCII_TREND_ID,
-  XEROX_PUNK_TREND_ID,
-} from "../data/trendIds";
+import { DITHERING_ASCII_TREND_ID } from "../data/trendIds";
+import type { PatchTypeId } from "../data/patchTypes";
 import { ControlToggleRow } from "../components/ControlToggleRow";
 import { ThemeSelect } from "../components/ThemeSelect";
+import { PatchTypeSelect } from "../components/PatchTypeSelect";
 import { AspectRatioSelect } from "../components/AspectRatioSelect";
 import type { StickerFormat } from "./utils/promptBuilder";
 import type { AspectRatioPreset } from "./utils/aspectRatioPresets";
@@ -13,6 +12,11 @@ const STICKER_FORMAT_OPTIONS: { value: StickerFormat; label: string }[] = [
   { value: "off", label: "Off" },
   { value: "single", label: "Single" },
   { value: "sheet", label: "Sheet" },
+];
+
+const TOGGLE_OPTIONS: { value: boolean; label: string }[] = [
+  { value: false, label: "Off" },
+  { value: true, label: "On" },
 ];
 
 export interface TrendRefinePanelProps {
@@ -25,8 +29,11 @@ export interface TrendRefinePanelProps {
   themeSelectEnabled: boolean;
   chibiMode: boolean;
   onChibiModeChange: (enabled: boolean) => void;
-  xeroxPatchMode: boolean;
-  onXeroxPatchModeChange: (enabled: boolean) => void;
+  patchMode: boolean;
+  onPatchModeChange: (enabled: boolean) => void;
+  patchType: PatchTypeId;
+  onPatchTypeChange: (id: PatchTypeId) => void;
+  onPatchTypeMenuOpenChange?: (open: boolean) => void;
   ditheringColorMode: boolean;
   onDitheringColorModeChange: (enabled: boolean) => void;
   effectiveAspectRatio: AspectRatioPreset;
@@ -43,14 +50,16 @@ export function TrendRefinePanel({
   themeSelectEnabled,
   chibiMode,
   onChibiModeChange,
-  xeroxPatchMode,
-  onXeroxPatchModeChange,
+  patchMode,
+  onPatchModeChange,
+  patchType,
+  onPatchTypeChange,
+  onPatchTypeMenuOpenChange,
   ditheringColorMode,
   onDitheringColorModeChange,
   effectiveAspectRatio,
   onAspectRatioChange,
 }: TrendRefinePanelProps) {
-  const showPatches = selectedTrendId === XEROX_PUNK_TREND_ID;
   const showColor = selectedTrendId === DITHERING_ASCII_TREND_ID;
 
   return (
@@ -92,14 +101,33 @@ export function TrendRefinePanel({
         ariaLabel="Chibi mode"
       />
 
-      {showPatches && (
-        <ControlToggleRow
-          label="Patches"
-          value={xeroxPatchMode}
-          onChange={onXeroxPatchModeChange}
-          ariaLabel="Embroidered patches (Xerox Punk)"
-        />
-      )}
+      <div className="figma-control-row figma-patch-row shrink-0 mb-2 min-w-0">
+        <span className="figma-section-title shrink-0">Patches</span>
+        <div className="figma-control-actions">
+          <div className="figma-segment-group" role="group" aria-label="Patches">
+            {TOGGLE_OPTIONS.map(({ value, label }) => {
+              const isActive = patchMode === value;
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => onPatchModeChange(value)}
+                  aria-pressed={isActive}
+                  className={`figma-segment ${isActive ? "figma-segment-active" : ""}`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+          <PatchTypeSelect
+            value={patchType}
+            onChange={onPatchTypeChange}
+            onOpenChange={onPatchTypeMenuOpenChange}
+            disabled={!patchMode}
+          />
+        </div>
+      </div>
 
       {showColor && (
         <ControlToggleRow

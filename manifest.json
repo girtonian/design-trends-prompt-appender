@@ -8,7 +8,8 @@
   "capabilities": [],
   "permissions": [],
   "networkAccess": {
-    "allowedDomains": ["https://api.lemonsqueezy.com"]
+    "allowedDomains": ["https://api.lemonsqueezy.com"],
+    "reasoning": "Validates and activates Pro license keys purchased via Lemon Squeezy (api.lemonsqueezy.com/v1/licenses). No design or file data is sent."
   },
   "relaunchButtons": [
     {

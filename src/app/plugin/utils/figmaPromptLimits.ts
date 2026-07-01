@@ -1,8 +1,6 @@
 import type { ThemeId } from "../../data/themes";
-import {
-  DITHERING_ASCII_TREND_ID,
-  XEROX_PUNK_TREND_ID,
-} from "../../data/trendIds";
+import { DITHERING_ASCII_TREND_ID } from "../../data/trendIds";
+import { getPatchTypeById, type PatchTypeId } from "../../data/patchTypes";
 import {
   getStickerSheetLayout,
   STICKER_SHEET_VARIETY,
@@ -74,7 +72,8 @@ export interface ModifierNegativeInput {
   aspectRatio: AspectRatioPreset;
   trendId: number;
   chibiMode: boolean;
-  xeroxPatchMode: boolean;
+  patchMode: boolean;
+  patchType: PatchTypeId;
   ditheringColorMode: boolean;
   trendNegatives: string;
 }
@@ -98,8 +97,9 @@ export function collectModifierNegatives(input: ModifierNegativeInput): string {
     parts.push(CHIBI_NEGATIVE_FIGMA);
   }
 
-  if (input.trendId === XEROX_PUNK_TREND_ID && input.xeroxPatchMode) {
-    parts.push(XEROX_PATCH_NEGATIVE_FIGMA);
+  if (input.patchMode) {
+    const patchType = getPatchTypeById(input.patchType);
+    if (patchType) parts.push(patchType.negativeGuardrail);
   }
 
   if (input.trendId === DITHERING_ASCII_TREND_ID && input.ditheringColorMode) {
@@ -122,16 +122,6 @@ export const DITHERING_MONO_NEGATIVE_FIGMA = DITHERING_MONO_GUARDRAILS;
 /** @deprecated Use STICKER_OUTPUT_CONTRACT_SINGLE + STICKER_SINGLE_FINISH_FIGMA */
 export const STICKER_SINGLE_SUFFIX_FIGMA =
   `${STICKER_DIE_CUT_FIGMA}, one single centered sticker only, one subject, no grid, no sticker sheet`;
-
-export function buildXeroxPatchSuffixFigma(themeLabel: string): string {
-  return (
-    `sporadic embroidered patches matching ${themeLabel}, ` +
-    "stitched appliqué, woven fabric badges"
-  );
-}
-
-export const XEROX_PATCH_NEGATIVE_FIGMA =
-  "flat print only, no textile texture";
 
 const THEME_SUBJECT_COMPACT: Record<ThemeId, string> = {
   "food-drink": "food and drink only",

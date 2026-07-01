@@ -92,7 +92,8 @@ const ditheringSingleColor = buildTrendTapPrompt({
     stickerFormat: "single",
     themeId: "food-drink",
     chibiMode: false,
-    xeroxPatchMode: false,
+    patchMode: false,
+    patchType: "embroidered",
     ditheringColorMode: true,
     aspectRatio: "1:1",
     isPro: true,
@@ -151,7 +152,8 @@ const xeroxSinglePatches = buildTrendTapPrompt({
     stickerFormat: "single",
     themeId: "animals",
     chibiMode: false,
-    xeroxPatchMode: true,
+    patchMode: true,
+    patchType: "embroidered",
     ditheringColorMode: false,
     aspectRatio: "1:1",
     isPro: true,
@@ -163,8 +165,8 @@ assert(
   "Xerox Single+Patches must start with output contract"
 );
 assert(
-  xeroxSinglePatches.includes("embroidered patches"),
-  "Xerox Patches modifier must be present"
+  xeroxSinglePatches.includes("embroidered patch, raised stitched thread texture"),
+  "Patches modifier must be present"
 );
 const forbiddenObservationTerms = [
   "purple background",
@@ -197,7 +199,8 @@ const sheetPrompt = buildTrendTapPrompt({
     stickerFormat: "sheet",
     themeId: "food-drink",
     chibiMode: false,
-    xeroxPatchMode: false,
+    patchMode: false,
+    patchType: "embroidered",
     ditheringColorMode: false,
     aspectRatio: "1:1",
     isPro: true,
@@ -242,7 +245,8 @@ const xeroxOff = buildTrendTapPrompt({
     stickerFormat: "off",
     themeId: null,
     chibiMode: false,
-    xeroxPatchMode: false,
+    patchMode: false,
+    patchType: "embroidered",
     ditheringColorMode: false,
     aspectRatio: "16:9",
     isPro: true,
@@ -274,6 +278,38 @@ for (const term of forbiddenObservationTerms) {
 assert(
   !sheetPrompt.startsWith(STICKER_OUTPUT_CONTRACT_SINGLE),
   "Sheet mode must not use single output contract"
+);
+
+const printedPatchOnMinimalism = buildTrendTapPrompt({
+  trend: IMPERFECT_MINIMALISM,
+  variationIndex: 0,
+  modifiers: {
+    stickerFormat: "off",
+    themeId: null,
+    chibiMode: false,
+    patchMode: true,
+    patchType: "printed",
+    ditheringColorMode: false,
+    aspectRatio: "1:1",
+    isPro: true,
+  },
+});
+
+assert(
+  printedPatchOnMinimalism.includes(
+    "printed patch, full-color printed artwork, fine detail, no dense stitching"
+  ),
+  "Patches must work independently of trend (Printed on a non-Xerox trend)"
+);
+assert(
+  printedPatchOnMinimalism.includes(
+    "raised thread texture, dense embroidery stitching"
+  ),
+  "Printed patch type must use its own negative guardrail"
+);
+assert(
+  !printedPatchOnMinimalism.includes("flat print only, no textile texture"),
+  "Printed patch must not use the embroidered negative guardrail"
 );
 
 console.log("\nDithering ASCII · Single · Food · Color sample:");

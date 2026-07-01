@@ -20,6 +20,7 @@ import {
 } from "./figmaPromptLimits";
 import { trends } from "../../data/trends";
 import { buildTrendTapPrompt } from "./buildTrendTapPrompt";
+import { getPatchTypeLabel, DEFAULT_PATCH_TYPE_ID, type PatchTypeId } from "../../data/patchTypes";
 
 export type StickerFormat = "off" | "single" | "sheet";
 
@@ -85,8 +86,13 @@ export function getChibiFooterSuffix(chibiMode: boolean): string {
   return chibiMode ? " · Chibi" : "";
 }
 
-export function getXeroxPatchFooterSuffix(xeroxPatchMode: boolean): string {
-  return xeroxPatchMode ? " · Patches" : "";
+export function getPatchFooterSuffix(
+  patchMode: boolean,
+  patchType: PatchTypeId
+): string {
+  if (!patchMode) return "";
+  const label = getPatchTypeLabel(patchType);
+  return label ? ` · ${label} patch` : " · Patches";
 }
 
 export function getDitheringColorFooterSuffix(ditheringColorMode: boolean): string {
@@ -200,7 +206,8 @@ export interface BuildPluginWeavePromptOptions {
   aspectRatio?: AspectRatioPreset;
   chibiMode?: boolean;
   trendId?: number;
-  xeroxPatchMode?: boolean;
+  patchMode?: boolean;
+  patchType?: PatchTypeId;
   ditheringColorMode?: boolean;
   /** When false, sticker/theme/chibi/trend modifiers are stripped. */
   isPro?: boolean;
@@ -218,7 +225,8 @@ export function resolveProPromptOptions(
     subject: null,
     themeId: null,
     chibiMode: false,
-    xeroxPatchMode: false,
+    patchMode: false,
+    patchType: DEFAULT_PATCH_TYPE_ID,
     ditheringColorMode: false,
   };
 }
@@ -258,7 +266,8 @@ export function buildPluginWeavePrompt(
       stickerFormat: resolved.stickerFormat,
       themeId: resolved.themeId ?? null,
       chibiMode: resolved.chibiMode ?? false,
-      xeroxPatchMode: resolved.xeroxPatchMode ?? false,
+      patchMode: resolved.patchMode ?? false,
+      patchType: resolved.patchType ?? DEFAULT_PATCH_TYPE_ID,
       ditheringColorMode: resolved.ditheringColorMode ?? false,
       aspectRatio: resolved.aspectRatio ?? "16:9",
       isPro: options.isPro !== false,

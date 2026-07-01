@@ -16,6 +16,7 @@ import {
 import type { LicenseUiStatus } from "./utils/licenseTypes";
 import { type StickerFormat } from "./utils/promptBuilder";
 import type { ThemeId } from "../data/themes";
+import { DEFAULT_PATCH_TYPE_ID, type PatchTypeId } from "../data/patchTypes";
 import {
   DEFAULT_ASPECT_RATIO,
   getClosestAspectRatioPreset,
@@ -43,8 +44,10 @@ interface PluginContextState {
   setSelectedAspectRatio: (preset: AspectRatioPreset) => void;
   chibiMode: boolean;
   setChibiMode: (enabled: boolean) => void;
-  xeroxPatchMode: boolean;
-  setXeroxPatchMode: (enabled: boolean) => void;
+  patchMode: boolean;
+  setPatchMode: (enabled: boolean) => void;
+  patchType: PatchTypeId;
+  setPatchType: (id: PatchTypeId) => void;
   ditheringColorMode: boolean;
   setDitheringColorMode: (enabled: boolean) => void;
   isPro: boolean;
@@ -72,7 +75,8 @@ export function PluginController() {
   const [selectedAspectRatio, setSelectedAspectRatio] =
     useState<AspectRatioPreset>(DEFAULT_ASPECT_RATIO);
   const [chibiMode, setChibiMode] = useState(false);
-  const [xeroxPatchMode, setXeroxPatchMode] = useState(false);
+  const [patchMode, setPatchMode] = useState(false);
+  const [patchType, setPatchType] = useState<PatchTypeId>(DEFAULT_PATCH_TYPE_ID);
   const [ditheringColorMode, setDitheringColorMode] = useState(false);
   const [isPro, setIsPro] = useState(false);
   const [licenseStatus, setLicenseStatus] =
@@ -154,8 +158,11 @@ export function PluginController() {
           if (typeof message.chibiMode === "boolean") {
             setChibiMode(message.chibiMode);
           }
-          if (typeof message.xeroxPatchMode === "boolean") {
-            setXeroxPatchMode(message.xeroxPatchMode);
+          if (typeof message.patchMode === "boolean") {
+            setPatchMode(message.patchMode);
+          }
+          if (message.patchType) {
+            setPatchType(message.patchType);
           }
           if (typeof message.ditheringColorMode === "boolean") {
             setDitheringColorMode(message.ditheringColorMode);
@@ -206,14 +213,16 @@ export function PluginController() {
       stickerFormat,
       selectedThemeId,
       chibiMode,
-      xeroxPatchMode,
+      patchMode,
+      patchType,
       ditheringColorMode,
     });
   }, [
     stickerFormat,
     selectedThemeId,
     chibiMode,
-    xeroxPatchMode,
+    patchMode,
+    patchType,
     ditheringColorMode,
   ]);
 
@@ -233,8 +242,10 @@ export function PluginController() {
     setSelectedAspectRatio,
     chibiMode,
     setChibiMode,
-    xeroxPatchMode,
-    setXeroxPatchMode,
+    patchMode,
+    setPatchMode,
+    patchType,
+    setPatchType,
     ditheringColorMode,
     setDitheringColorMode,
     isPro,
