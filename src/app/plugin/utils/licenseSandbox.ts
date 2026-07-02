@@ -51,6 +51,8 @@ function maskLicenseKey(key: string): string {
 }
 
 function getInstanceName(): string {
+  // Sent to Lemon Squeezy as instance_name on activation.
+  // The Figma user ID is an opaque platform identifier; no PII is included.
   const userId = figma.currentUser?.id;
   if (userId) return `figma-${userId}`;
   return `figma-anon-${Date.now()}`;
@@ -224,6 +226,20 @@ export async function clearStoredLicense(): Promise<void> {
 export function openExternalCheckout(url: string): void {
   if (!url) {
     figma.notify("Checkout URL is not configured.");
+    return;
+  }
+  // Reject anything that isn't a plain https URL — this value arrives via
+  // postMessage from the UI and must not be allowed to open javascript: or
+  // other non-http schemes.
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    figma.notify("Invalid checkout URL.");
+    return;
+  }
+  if (parsed.protocol !== "https:") {
+    figma.notify("Checkout URL must use HTTPS.");
     return;
   }
   figma.openExternal(url);

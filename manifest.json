@@ -9,7 +9,7 @@
   "permissions": [],
   "networkAccess": {
     "allowedDomains": ["https://api.lemonsqueezy.com"],
-    "reasoning": "Validates and activates Pro license keys purchased via Lemon Squeezy (api.lemonsqueezy.com/v1/licenses). No design or file data is sent."
+    "reasoning": "Calls api.lemonsqueezy.com/v1/licenses/activate and /validate to activate and periodically re-validate Pro license keys. The only data sent is the user-entered license key and an opaque activation instance name derived from the Figma user ID (format: figma-{userId}). No design content, layer names, node data, images, or file metadata is read by or transmitted from this plugin."
   },
   "relaunchButtons": [
     {
